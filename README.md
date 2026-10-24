@@ -5,7 +5,7 @@ Aplicación web para llevar el control de los videojuegos que posees, las sesion
 **URLs públicas (Render)**
 
 | Servicio | URL |
-| Frontend | pendiente |
+| Frontend | https://progresogamer-app-emilse.onrender.com |
 | Backend (API) | https://progresogamer-api-emilse.onrender.com |
 | Health check | https://progresogamer-api-emilse.onrender.com/api/health |
 
