@@ -1,4 +1,5 @@
 import { useEffect, useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { AlertMessage } from '../components/ui/AlertMessage';
 import type { PartidaInput } from '../types';
 
@@ -10,6 +11,7 @@ interface PartidaFormProps {
   guardando: boolean;
   errorServidor: string | null;
   onSubmit: (input: Omit<PartidaInput, 'videojuego'>) => Promise<void>;
+  cancelTo: string;
 }
 
 export function PartidaForm({
@@ -20,6 +22,7 @@ export function PartidaForm({
   guardando,
   errorServidor,
   onSubmit,
+  cancelTo,
 }: PartidaFormProps) {
   const [fecha, setFecha] = useState('');
   const [duracionMinutos, setDuracionMinutos] = useState('');
@@ -78,7 +81,7 @@ export function PartidaForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form className="ui-form" onSubmit={handleSubmit} noValidate>
       {errorValidacion && (
         <AlertMessage variant="error">{errorValidacion}</AlertMessage>
       )}
@@ -86,98 +89,113 @@ export function PartidaForm({
         <AlertMessage variant="error">{errorServidor}</AlertMessage>
       )}
       {avanceActual !== null && (
-        <p className="mb-3" aria-live="polite">
+        <p className="ui-form__reference" aria-live="polite">
           Avance actual: {avanceActual} %
         </p>
       )}
 
-      <div className="mb-3">
-        <label className="form-label" htmlFor="partida-fecha">
-          Fecha y hora <span aria-hidden="true">*</span>
-        </label>
-        <input
-          className="form-control"
-          id="partida-fecha"
-          onChange={(event) => setFecha(event.target.value)}
-          required
-          type="datetime-local"
-          value={fecha}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label" htmlFor="partida-duracion">
-          Duración en minutos <span aria-hidden="true">*</span>
-        </label>
-        <input
-          className="form-control"
-          id="partida-duracion"
-          min="0"
-          onChange={(event) => setDuracionMinutos(event.target.value)}
-          required
-          step="any"
-          type="number"
-          value={duracionMinutos}
-        />
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label" htmlFor="partida-avance">
-          Avance total al terminar esta sesión (%) <span aria-hidden="true">*</span>
-        </label>
-        <input
-          className="form-control"
-          id="partida-avance"
-          max="100"
-          min="0"
-          onChange={(event) => setPorcentajeAvance(event.target.value)}
-          required
-          aria-describedby="partida-avance-ayuda"
-          step="any"
-          type="number"
-          value={porcentajeAvance}
-        />
-        <div className="form-text" id="partida-avance-ayuda">
-          Indica el avance acumulado del juego, no lo que avanzaste hoy
+      <div className="ui-form__grid ui-form__grid--partida">
+        <div className="ui-form__field">
+          <label className="form-label" htmlFor="partida-fecha">
+            Fecha y hora <span aria-hidden="true">*</span>
+          </label>
+          <input
+            className="form-control"
+            id="partida-fecha"
+            onChange={(event) => setFecha(event.target.value)}
+            required
+            type="datetime-local"
+            value={fecha}
+          />
+          <p className="ui-form__help">Indica cuándo tuvo lugar la sesión.</p>
         </div>
-        {avanceActual !== null &&
-          porcentajeAvance.trim() !== '' &&
-          Number.isFinite(Number(porcentajeAvance)) &&
-          Number(porcentajeAvance) < avanceActual && (
-            <div className="mt-2">
-              <AlertMessage variant="info">
-                El avance indicado es menor al avance actual. Puedes guardar si
-                este valor corresponde al avance total al terminar la sesión.
-              </AlertMessage>
-            </div>
-          )}
+
+        <div className="ui-form__field">
+          <label className="form-label" htmlFor="partida-duracion">
+            Duración en minutos <span aria-hidden="true">*</span>
+          </label>
+          <input
+            className="form-control"
+            id="partida-duracion"
+            min="0"
+            onChange={(event) => setDuracionMinutos(event.target.value)}
+            required
+            step="any"
+            type="number"
+            value={duracionMinutos}
+          />
+          <p className="ui-form__help">
+            Duración total de la sesión en minutos.
+          </p>
+        </div>
+
+        <div className="ui-form__field ui-form__field--wide">
+          <label className="form-label" htmlFor="partida-avance">
+            Avance total al terminar esta sesión (%) <span aria-hidden="true">*</span>
+          </label>
+          <input
+            className="form-control"
+            id="partida-avance"
+            max="100"
+            min="0"
+            onChange={(event) => setPorcentajeAvance(event.target.value)}
+            required
+            aria-describedby="partida-avance-ayuda"
+            step="any"
+            type="number"
+            value={porcentajeAvance}
+          />
+          <div className="form-text" id="partida-avance-ayuda">
+            Indica el avance acumulado del juego, no lo que avanzaste hoy
+          </div>
+          {avanceActual !== null &&
+            porcentajeAvance.trim() !== '' &&
+            Number.isFinite(Number(porcentajeAvance)) &&
+            Number(porcentajeAvance) < avanceActual && (
+              <div className="mt-2">
+                <AlertMessage variant="info">
+                  El avance indicado es menor al avance actual. Puedes guardar
+                  si este valor corresponde al avance total al terminar la
+                  sesión.
+                </AlertMessage>
+              </div>
+            )}
+        </div>
+
+        <div className="ui-form__field ui-form__field--wide">
+          <label className="form-label" htmlFor="partida-notas">
+            Notas
+          </label>
+          <textarea
+            className="form-control"
+            id="partida-notas"
+            onChange={(event) => setNotas(event.target.value)}
+            rows={3}
+            value={notas}
+          />
+          <p className="ui-form__help">
+            Opcional: anota detalles de esta sesión.
+          </p>
+        </div>
       </div>
 
-      <div className="mb-4">
-        <label className="form-label" htmlFor="partida-notas">
-          Notas
-        </label>
-        <textarea
-          className="form-control"
-          id="partida-notas"
-          onChange={(event) => setNotas(event.target.value)}
-          rows={3}
-          value={notas}
-        />
+      <div className="ui-form__actions">
+        <button
+          className="ui-button ui-button--primary"
+          disabled={
+            guardando ||
+            !selectorListo ||
+            resumenCargando ||
+            avanceActual === null
+          }
+          type="submit"
+        >
+          {guardando ? 'Guardando...' : 'Guardar'}
+        </button>
+        <Link className="ui-button ui-button--secondary" to={cancelTo}>
+          Cancelar
+        </Link>
       </div>
-
-      <button
-        className="btn btn-primary"
-        disabled={
-          guardando ||
-          !selectorListo ||
-          resumenCargando ||
-          avanceActual === null
-        }
-        type="submit"
-      >
-        {guardando ? 'Guardando...' : 'Guardar partida'}
-      </button>
     </form>
   );
 }

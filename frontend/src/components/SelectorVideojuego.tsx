@@ -68,8 +68,8 @@ export function SelectorVideojuego({
   }, [onChange, onReadyChange, videojuegoIdFijo]);
 
   return (
-    <div className="mb-3">
-      <label className="form-label" htmlFor="partida-videojuego">
+    <div className="ui-form__field ui-form__selector">
+      <label htmlFor="partida-videojuego">
         Videojuego <span aria-hidden="true">*</span>
       </label>
       {loading && (
@@ -86,7 +86,7 @@ export function SelectorVideojuego({
       )}
       {!loading && !error && videojuegos.length > 0 && (
         <select
-          className="form-select"
+          className="form-select ui-form__control"
           disabled={disabled || Boolean(videojuegoIdFijo)}
           id="partida-videojuego"
           onChange={(event) => onChange(event.target.value)}
@@ -100,6 +100,9 @@ export function SelectorVideojuego({
             </option>
           ))}
         </select>
+      )}
+      {videojuegoIdFijo && !loading && !error && (
+        <p className="ui-form__help">El videojuego se fijó desde su detalle.</p>
       )}
     </div>
   );

@@ -2,6 +2,10 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { eliminarPartida, listarPartidas } from '../api/partidasApi';
 import { AlertMessage } from '../components/ui/AlertMessage';
+import { Boton } from '../components/ui/Boton';
+import { CardItem } from '../components/ui/CardItem';
+import { IconoCalendario, IconoMando, IconoReloj } from '../components/ui/iconos';
+import { ModalConfirmacion } from '../components/ui/ModalConfirmacion';
 import { PageContainer } from '../components/ui/PageContainer';
 import type { PartidaListado } from '../types';
 
@@ -11,6 +15,8 @@ export function ListaPartidasPage() {
   const [error, setError] = useState<string | null>(null);
   const [errorEliminar, setErrorEliminar] = useState<string | null>(null);
   const [eliminandoId, setEliminandoId] = useState<string | null>(null);
+  const [partidaPendienteEliminar, setPartidaPendienteEliminar] =
+    useState<PartidaListado | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -40,11 +46,7 @@ export function ListaPartidasPage() {
   }, []);
 
   async function handleDelete(partida: PartidaListado) {
-    const confirmed = window.confirm(
-      `¿Eliminar la partida de ${partida.videojuego.nombre} del ${formatDate(partida.fecha)}?`,
-    );
-    if (!confirmed) return;
-
+    setPartidaPendienteEliminar(null);
     setEliminandoId(partida._id);
     setErrorEliminar(null);
     try {
@@ -65,9 +67,9 @@ export function ListaPartidasPage() {
 
   return (
     <PageContainer title="Partidas">
-      <div className="d-flex justify-content-end mb-3">
-        <Link className="btn btn-primary" to="/partidas/nueva">
-          Nueva partida
+      <div className="sessions-toolbar">
+        <Link className="ui-button ui-button--primary" to="/partidas/nueva">
+          Registrar partida
         </Link>
       </div>
 
@@ -85,56 +87,67 @@ export function ListaPartidasPage() {
         </AlertMessage>
       )}
       {!loading && !error && partidas.length > 0 && (
-        <div className="table-responsive">
-          <table className="table table-striped table-hover align-middle">
-            <thead>
-              <tr>
-                <th scope="col">Videojuego</th>
-                <th scope="col">Fecha</th>
-                <th scope="col">Duración</th>
-                <th scope="col">Avance</th>
-                <th scope="col">Notas</th>
-                <th scope="col">
-                  <span className="visually-hidden">Acciones</span>
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {partidas.map((partida) => (
-                <tr key={partida._id}>
-                  <td>
-                    <Link
-                      to={`/videojuegos/${encodeURIComponent(partida.videojuego._id)}`}
-                    >
-                      {partida.videojuego.nombre}
-                    </Link>
-                  </td>
-                  <td>{formatDate(partida.fecha)}</td>
-                  <td>{partida.duracionMinutos} min</td>
-                  <td>
-                    {partida.porcentajeAvance === undefined
-                      ? '—'
-                      : `${partida.porcentajeAvance}%`}
-                  </td>
-                  <td>{partida.notas || '—'}</td>
-                  <td>
-                    <button
-                      className="btn btn-sm btn-outline-danger"
-                      disabled={eliminandoId === partida._id}
-                      onClick={() => void handleDelete(partida)}
-                      type="button"
-                    >
-                      {eliminandoId === partida._id
-                        ? 'Eliminando...'
-                        : 'Eliminar'}
-                    </button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+        <div aria-label="Lista de partidas" className="sessions-list">
+          {partidas.map((partida) => (
+            <CardItem
+              accion={
+                <Boton
+                  disabled={eliminandoId === partida._id}
+                  onClick={() => setPartidaPendienteEliminar(partida)}
+                  variante="peligro"
+                >
+                  {eliminandoId === partida._id ? 'Eliminando...' : 'Eliminar'}
+                </Boton>
+              }
+              className="session-card"
+              detalles={
+                <>
+                  <span>
+                    <IconoCalendario aria-hidden="true" />
+                    {formatDate(partida.fecha)}
+                  </span>
+                  <span>
+                    <IconoReloj aria-hidden="true" />
+                    {partida.duracionMinutos} min
+                  </span>
+                  {partida.notas && <span>{partida.notas}</span>}
+                </>
+              }
+              etiquetaProgreso="Avance total"
+              icono={<IconoMando />}
+              key={partida._id}
+              progreso={partida.porcentajeAvance}
+              titulo={
+                <Link
+                  className="session-card__game-link"
+                  to={`/videojuegos/${encodeURIComponent(partida.videojuego._id)}`}
+                >
+                  {partida.videojuego.nombre}
+                </Link>
+              }
+            />
+          ))}
         </div>
       )}
+      <ModalConfirmacion
+        abierto={partidaPendienteEliminar !== null}
+        confirmando={partidaPendienteEliminar?._id === eliminandoId}
+        onCancelar={() => setPartidaPendienteEliminar(null)}
+        onConfirmar={() => {
+          if (partidaPendienteEliminar) {
+            void handleDelete(partidaPendienteEliminar);
+          }
+        }}
+        titulo="Eliminar partida"
+      >
+        {partidaPendienteEliminar && (
+          <>
+            ¿Eliminar la partida de{' '}
+            <strong>{partidaPendienteEliminar.videojuego.nombre}</strong> del{' '}
+            {formatDate(partidaPendienteEliminar.fecha)}?
+          </>
+        )}
+      </ModalConfirmacion>
     </PageContainer>
   );
 }

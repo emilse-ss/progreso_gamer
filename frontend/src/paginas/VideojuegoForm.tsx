@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from 'react';
+import { Link } from 'react-router-dom';
 import { AlertMessage } from '../components/ui/AlertMessage';
 import { ESTADOS, GENEROS, PLATAFORMAS } from '../enums';
 import type {
@@ -20,6 +21,7 @@ interface VideojuegoFormProps {
   guardando: boolean;
   errorServidor: string | null;
   onSubmit: (values: VideojuegoInput) => Promise<void>;
+  cancelTo: string;
 }
 
 function isOneOf<T extends readonly string[]>(
@@ -34,6 +36,7 @@ export function VideojuegoForm({
   guardando,
   errorServidor,
   onSubmit,
+  cancelTo,
 }: VideojuegoFormProps) {
   const [nombre, setNombre] = useState(valoresIniciales?.nombre ?? '');
   const [plataforma, setPlataforma] = useState<Plataforma | ''>(
@@ -78,7 +81,7 @@ export function VideojuegoForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} noValidate>
+    <form className="ui-form" onSubmit={handleSubmit} noValidate>
       {errorValidacion && (
         <AlertMessage variant="error">{errorValidacion}</AlertMessage>
       )}
@@ -86,96 +89,114 @@ export function VideojuegoForm({
         <AlertMessage variant="error">{errorServidor}</AlertMessage>
       )}
 
-      <div className="mb-3">
-        <label className="form-label" htmlFor="videojuego-nombre">
-          Nombre <span aria-hidden="true">*</span>
-        </label>
-        <input
-          autoComplete="off"
-          className="form-control"
-          id="videojuego-nombre"
-          onChange={(event) => setNombre(event.target.value)}
-          required
-          type="text"
-          value={nombre}
-        />
+      <div className="ui-form__grid ui-form__grid--videojuego">
+        <div className="ui-form__field">
+          <label className="form-label" htmlFor="videojuego-nombre">
+            Nombre <span aria-hidden="true">*</span>
+          </label>
+          <input
+            autoComplete="off"
+            className="form-control"
+            id="videojuego-nombre"
+            onChange={(event) => setNombre(event.target.value)}
+            required
+            type="text"
+            value={nombre}
+          />
+          <p className="ui-form__help">Escribe el nombre del videojuego.</p>
+        </div>
+
+        <div className="ui-form__field">
+          <label className="form-label" htmlFor="videojuego-plataforma">
+            Plataforma
+          </label>
+          <select
+            className="form-select"
+            id="videojuego-plataforma"
+            onChange={(event) => {
+              const value = event.target.value;
+              if (value === '' || isOneOf(value, PLATAFORMAS)) {
+                setPlataforma(value);
+              }
+            }}
+            value={plataforma}
+          >
+            <option value="">Selecciona una plataforma (opcional)</option>
+            {PLATAFORMAS.map((opcion) => (
+              <option key={opcion} value={opcion}>
+                {opcion}
+              </option>
+            ))}
+          </select>
+          <p className="ui-form__help">
+            Selecciona la plataforma si deseas especificarla.
+          </p>
+        </div>
+
+        <div className="ui-form__field">
+          <label className="form-label" htmlFor="videojuego-genero">
+            Género
+          </label>
+          <select
+            className="form-select"
+            id="videojuego-genero"
+            onChange={(event) => {
+              const value = event.target.value;
+              if (value === '' || isOneOf(value, GENEROS)) {
+                setGenero(value);
+              }
+            }}
+            value={genero}
+          >
+            <option value="">Selecciona un género (opcional)</option>
+            {GENEROS.map((opcion) => (
+              <option key={opcion} value={opcion}>
+                {opcion}
+              </option>
+            ))}
+          </select>
+          <p className="ui-form__help">
+            Selecciona el género si deseas especificarlo.
+          </p>
+        </div>
+
+        <div className="ui-form__field">
+          <label className="form-label" htmlFor="videojuego-estado">
+            Estado
+          </label>
+          <select
+            className="form-select"
+            id="videojuego-estado"
+            onChange={(event) => {
+              const value = event.target.value;
+              if (value === '' || isOneOf(value, ESTADOS)) {
+                setEstado(value);
+              }
+            }}
+            value={estado}
+          >
+            <option value="">Selecciona un estado (opcional)</option>
+            {ESTADOS.map((opcion) => (
+              <option key={opcion} value={opcion}>
+                {opcion}
+              </option>
+            ))}
+          </select>
+        </div>
       </div>
 
-      <div className="mb-3">
-        <label className="form-label" htmlFor="videojuego-plataforma">
-          Plataforma
-        </label>
-        <select
-          className="form-select"
-          id="videojuego-plataforma"
-          onChange={(event) => {
-            const value = event.target.value;
-            if (value === '' || isOneOf(value, PLATAFORMAS)) {
-              setPlataforma(value);
-            }
-          }}
-          value={plataforma}
+      <div className="ui-form__actions">
+        <button
+          className="ui-button ui-button--primary"
+          disabled={guardando}
+          type="submit"
         >
-          <option value="">Selecciona una plataforma (opcional)</option>
-          {PLATAFORMAS.map((opcion) => (
-            <option key={opcion} value={opcion}>
-              {opcion}
-            </option>
-          ))}
-        </select>
+          {guardando ? 'Guardando...' : 'Guardar'}
+        </button>
+        <Link className="ui-button ui-button--secondary" to={cancelTo}>
+          Cancelar
+        </Link>
       </div>
-
-      <div className="mb-3">
-        <label className="form-label" htmlFor="videojuego-genero">
-          Género
-        </label>
-        <select
-          className="form-select"
-          id="videojuego-genero"
-          onChange={(event) => {
-            const value = event.target.value;
-            if (value === '' || isOneOf(value, GENEROS)) {
-              setGenero(value);
-            }
-          }}
-          value={genero}
-        >
-          <option value="">Selecciona un género (opcional)</option>
-          {GENEROS.map((opcion) => (
-            <option key={opcion} value={opcion}>
-              {opcion}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <div className="mb-4">
-        <label className="form-label" htmlFor="videojuego-estado">
-          Estado
-        </label>
-        <select
-          className="form-select"
-          id="videojuego-estado"
-          onChange={(event) => {
-            const value = event.target.value;
-            if (value === '' || isOneOf(value, ESTADOS)) {
-              setEstado(value);
-            }
-          }}
-          value={estado}
-        >
-          <option value="">Selecciona un estado (opcional)</option>
-          {ESTADOS.map((opcion) => (
-            <option key={opcion} value={opcion}>
-              {opcion}
-            </option>
-          ))}
-        </select>
-      </div>
-
-      <button className="btn btn-primary" disabled={guardando} type="submit">
-        {guardando ? 'Guardando...' : 'Guardar videojuego'}
-      </button>
     </form>
   );
 }

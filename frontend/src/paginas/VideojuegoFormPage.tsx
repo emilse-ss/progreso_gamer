@@ -102,6 +102,11 @@ export function VideojuegoFormPage() {
           errorServidor={errorServidor}
           guardando={guardando}
           onSubmit={handleSubmit}
+          cancelTo={
+            id
+              ? `/videojuegos/${encodeURIComponent(id)}`
+              : '/videojuegos'
+          }
           valoresIniciales={
             valoresIniciales
               ? {

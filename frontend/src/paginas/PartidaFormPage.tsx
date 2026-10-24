@@ -103,7 +103,7 @@ export function PartidaFormPage() {
   }
 
   return (
-    <PageContainer title="Nueva partida">
+    <PageContainer title="Registrar partida">
       <SelectorVideojuego
         disabled={guardando}
         onChange={handleVideojuegoChange}
@@ -124,6 +124,11 @@ export function PartidaFormPage() {
           )}
           <PartidaForm
             avanceActual={resumenActual?.porcentajeAvanceActual ?? null}
+            cancelTo={
+              videojuegoSeleccionado
+                ? `/videojuegos/${encodeURIComponent(videojuegoSeleccionado)}`
+                : '/partidas'
+            }
             errorServidor={errorServidor}
             guardando={guardando}
             onSubmit={handleSubmit}

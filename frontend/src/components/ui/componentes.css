@@ -989,6 +989,139 @@
   padding: var(--esp-2) var(--esp-3);
 }
 
+.ui-form {
+  display: grid;
+  gap: var(--esp-4);
+}
+
+.ui-form__grid {
+  display: grid;
+  gap: var(--esp-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.ui-form__field {
+  display: grid;
+  gap: var(--esp-2);
+  min-width: 0;
+}
+
+.ui-form__field label,
+.ui-form__selector > label {
+  font-size: var(--texto-14);
+  font-weight: 800;
+}
+
+.ui-form .form-control,
+.ui-form .form-select,
+.ui-form__selector .form-select {
+  background-color: var(--blanco);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  color: var(--negro);
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-16);
+  min-height: var(--alto-tactil);
+  padding: var(--esp-2) var(--esp-3);
+}
+
+.ui-form textarea.form-control {
+  min-height: calc(var(--alto-tactil) * 2);
+  resize: vertical;
+}
+
+.ui-form .form-control:disabled,
+.ui-form .form-select:disabled,
+.ui-form__selector .form-select:disabled {
+  background-color: var(--gris-card);
+  color: var(--carbon);
+  cursor: not-allowed;
+  opacity: 1;
+}
+
+.ui-form__help {
+  color: var(--carbon);
+  font-size: var(--texto-12);
+  margin: 0;
+}
+
+.ui-form__reference {
+  background: var(--azul);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  font-size: var(--texto-16);
+  font-weight: 800;
+  margin: 0;
+  padding: var(--esp-3);
+}
+
+.ui-form__actions {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+}
+
+.ui-form__actions > * {
+  width: 100%;
+}
+
+.ui-form > .ui-alert {
+  margin: 0;
+}
+
+.ui-form__selector {
+  margin-bottom: var(--esp-4);
+}
+
+.ui-form__selector .ui-alert {
+  margin: 0;
+}
+
+.sessions-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: var(--esp-4);
+}
+
+.sessions-list {
+  display: grid;
+  gap: var(--esp-4);
+}
+
+.session-card {
+  background: var(--gris-card);
+}
+
+.session-card .ui-card-item__icon .ui-icon {
+  color: var(--indigo);
+  height: var(--icono-m);
+  width: var(--icono-m);
+}
+
+.session-card .ui-card-item__details span {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--esp-1);
+}
+
+.session-card .ui-card-item__details .ui-icon {
+  flex: 0 0 auto;
+  height: var(--icono-s);
+  width: var(--icono-s);
+}
+
+.session-card__game-link {
+  color: var(--negro);
+  text-decoration: none;
+}
+
+.session-card__game-link:hover {
+  color: var(--indigo-oscuro);
+  text-decoration: underline;
+  text-decoration-thickness: var(--ancho-linea-fina);
+  text-underline-offset: var(--esp-1);
+}
+
 @media (min-width: 48rem) {
   .app-navbar__inner {
     flex-wrap: nowrap;
@@ -1065,6 +1198,28 @@
   .detail-item .ui-card-item__action {
     grid-column: auto;
     width: auto;
+  }
+
+  .ui-form__grid--videojuego,
+  .ui-form__grid--partida {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .ui-form__field--wide {
+    grid-column: 1 / -1;
+  }
+
+  .ui-form__actions {
+    flex-direction: row;
+    justify-content: flex-end;
+  }
+
+  .ui-form__actions > * {
+    width: auto;
+  }
+
+  .session-card {
+    grid-template-columns: auto minmax(0, 1fr) auto;
   }
 }
 
