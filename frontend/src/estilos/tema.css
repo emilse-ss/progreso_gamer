@@ -1,0 +1,114 @@
+:root {
+  --rojo: #e60012;
+  --rojo-oscuro: #b80010;
+  --indigo: #4b3fb0;
+  --indigo-oscuro: #2e2a7a;
+  --amarillo: #ffd500;
+  --verde: #5cb531;
+  --verde-oscuro: #4f7f1f;
+  --azul: #2fa8e0;
+  --naranja: #f7931e;
+  --morado: #9b59b6;
+  --negro: #1a1a1a;
+  --gris-card: #f0f0f0;
+  --crema: #fbf7e8;
+  --carbon: #3a3a3c;
+
+  --estado-jugando: var(--verde);
+  --estado-jugando-texto: var(--negro);
+  --estado-pausado: var(--amarillo);
+  --estado-pausado-texto: var(--negro);
+  --estado-completado: var(--azul);
+  --estado-completado-texto: var(--negro);
+  --estado-abandonado: var(--rojo);
+  --estado-abandonado-texto: #fff;
+
+  --borde-grueso: 3px solid var(--negro);
+  --radio-m: 14px;
+  --radio-l: 18px;
+  --sombra-dura: 0 4px 0 var(--negro);
+  --filo-interior: inset 0 0 0 2px #fff;
+
+  --esp-1: 4px;
+  --esp-2: 8px;
+  --esp-3: 12px;
+  --esp-4: 16px;
+  --esp-5: 20px;
+  --esp-6: 24px;
+  --esp-7: 28px;
+  --esp-8: 32px;
+
+  --fuente-titulo: 'Kanit', sans-serif;
+  --fuente-texto: 'M PLUS Rounded 1c', sans-serif;
+
+  --texto-12: 12px;
+  --texto-14: 14px;
+  --texto-16: 16px;
+  --texto-20: 20px;
+  --texto-28: 28px;
+  --texto-40: 40px;
+
+  --ancho-contenido: 960px;
+  --ancho-foco: 3px;
+  --offset-foco: 2px;
+
+  --bs-primary: var(--amarillo);
+  --bs-primary-rgb: 255, 213, 0;
+  --bs-success: var(--verde-oscuro);
+  --bs-success-rgb: 79, 127, 31;
+  --bs-danger: var(--rojo);
+  --bs-danger-rgb: 230, 0, 18;
+  --bs-info: var(--azul);
+  --bs-info-rgb: 47, 168, 224;
+  --bs-warning: var(--amarillo);
+  --bs-warning-rgb: 255, 213, 0;
+  --bs-font-sans-serif: var(--fuente-texto);
+  --bs-body-font-family: var(--fuente-texto);
+  --bs-body-color: var(--negro);
+  --bs-body-bg: var(--crema);
+  --bs-border-radius: var(--radio-m);
+  --bs-border-radius-sm: var(--radio-m);
+  --bs-border-radius-lg: var(--radio-l);
+  --bs-border-radius-xl: var(--radio-l);
+  --bs-border-radius-xxl: var(--radio-l);
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  background-color: var(--crema);
+  color: var(--negro);
+  font-family: var(--fuente-texto);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--fuente-titulo);
+  font-style: italic;
+  font-weight: 800;
+}
+
+:focus-visible {
+  outline: var(--ancho-foco) solid var(--indigo);
+  outline-offset: var(--offset-foco);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms;
+    animation-iteration-count: 1;
+    scroll-behavior: auto;
+    transition-duration: 0.01ms;
+  }
+}
