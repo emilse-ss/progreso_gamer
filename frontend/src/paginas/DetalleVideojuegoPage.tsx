@@ -9,8 +9,17 @@ import {
   obtenerResumenVideojuego,
   obtenerVideojuego,
 } from '../api/videojuegosApi';
+import type { EstadoVideojuego, Genero } from '../enums';
 import { AlertMessage } from '../components/ui/AlertMessage';
+import { BarraProgreso } from '../components/ui/BarraProgreso';
+import { Boton } from '../components/ui/Boton';
+import { CardItem } from '../components/ui/CardItem';
+import { EtiquetaSeccion } from '../components/ui/EtiquetaSeccion';
+import { Insignia } from '../components/ui/Insignia';
+import { ModalConfirmacion } from '../components/ui/ModalConfirmacion';
 import { PageContainer } from '../components/ui/PageContainer';
+import { Skeleton } from '../components/ui/Skeleton';
+import { IconoCalendario, IconoMando, IconoReloj, IconoTrofeo } from '../components/ui/iconos';
 import type {
   PartidaListado,
   Videojuego,
@@ -37,6 +46,22 @@ function errorMessage(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
 }
 
+const ETIQUETAS_ESTADO: Record<EstadoVideojuego, string> = {
+  jugando: 'Jugando',
+  pausado: 'Pausado',
+  completado: 'Completado',
+  abandonado: 'Abandonado',
+};
+
+const ETIQUETAS_GENERO: Record<Genero, string> = {
+  accion: 'Acción',
+  rol: 'Rol',
+  estrategia: 'Estrategia',
+  puzzle: 'Puzzle',
+  deportes: 'Deportes',
+  otro: 'Otro',
+};
+
 export function DetalleVideojuegoPage() {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -49,7 +74,11 @@ export function DetalleVideojuegoPage() {
   const [partidas, setPartidas] = useState<PartidaListado[]>([]);
   const [partidasLoading, setPartidasLoading] = useState(true);
   const [partidasError, setPartidasError] = useState<string | null>(null);
+  const [reintentoVideojuego, setReintentoVideojuego] = useState(0);
+  const [reintentoResumen, setReintentoResumen] = useState(0);
+  const [reintentoPartidas, setReintentoPartidas] = useState(0);
   const [eliminando, setEliminando] = useState(false);
+  const [confirmacionAbierta, setConfirmacionAbierta] = useState(false);
   const [eliminarError, setEliminarError] = useState<string | null>(null);
   const [nuevoLogroNombre, setNuevoLogroNombre] = useState('');
   const [errorLogro, setErrorLogro] = useState<string | null>(null);
@@ -92,7 +121,7 @@ export function DetalleVideojuegoPage() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, reintentoVideojuego]);
 
   useEffect(() => {
     if (!id) {
@@ -125,7 +154,7 @@ export function DetalleVideojuegoPage() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, reintentoResumen]);
 
   useEffect(() => {
     if (!id) {
@@ -160,20 +189,14 @@ export function DetalleVideojuegoPage() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, reintentoPartidas]);
 
   async function handleDelete() {
     if (!id || !videojuego) {
       return;
     }
 
-    const confirmed = window.confirm(
-      `¿Eliminar "${videojuego.nombre}"? También se borrarán todas sus partidas. Esta acción no se puede deshacer.`,
-    );
-    if (!confirmed) {
-      return;
-    }
-
+    setConfirmacionAbierta(false);
     setEliminando(true);
     setEliminarError(null);
     try {
@@ -256,75 +279,94 @@ export function DetalleVideojuegoPage() {
     }
   }
 
-  const title = videojuego?.nombre ?? 'Detalle del videojuego';
+  const title = videojuego ? (
+    <>
+      <span>{videojuego.nombre}</span>
+      <span
+        className={`game-status game-status--${videojuego.estado ?? 'sin-estado'} detail-heading__status`}
+      >
+        {videojuego.estado
+          ? ETIQUETAS_ESTADO[videojuego.estado]
+          : 'Sin estado'}
+      </span>
+    </>
+  ) : (
+    'Detalle del videojuego'
+  );
 
   return (
     <PageContainer title={title}>
-      {videojuegoLoading && (
-        <LoadingMessage message="Cargando videojuego..." />
-      )}
+      {videojuegoLoading && <Skeleton variante="detalle" />}
       {!videojuegoLoading && videojuegoError && (
-        <AlertMessage variant="error">{videojuegoError}</AlertMessage>
+        <AlertMessage variant="error">
+          <p>{videojuegoError}</p>
+          <div className="ui-alert__actions">
+            <Boton
+              onClick={() =>
+                setReintentoVideojuego((count) => count + 1)
+              }
+            >
+              Reintentar
+            </Boton>
+          </div>
+        </AlertMessage>
       )}
 
       {!videojuegoLoading && videojuego && (
         <>
-          <section aria-labelledby="datos-videojuego" className="card mb-4">
-            <div className="card-body">
-              <h2 className="h5 card-title" id="datos-videojuego">
-                Datos del videojuego
-              </h2>
-              <dl className="row mb-3">
-                <dt className="col-sm-3">Plataforma</dt>
-                <dd className="col-sm-9">{videojuego.plataforma ?? '—'}</dd>
-                <dt className="col-sm-3">Género</dt>
-                <dd className="col-sm-9">{videojuego.genero ?? '—'}</dd>
-                <dt className="col-sm-3">Estado</dt>
-                <dd className="col-sm-9">{videojuego.estado ?? '—'}</dd>
-              </dl>
-              <div className="d-flex flex-wrap gap-2">
-                <Link
-                  className="btn btn-outline-primary"
-                  to={`/videojuegos/${encodeURIComponent(videojuego._id)}/editar`}
-                >
-                  Editar
-                </Link>
-                <Link
-                  className="btn btn-primary"
-                  to={`/videojuegos/${encodeURIComponent(videojuego._id)}/partidas/nueva`}
-                >
-                  Registrar partida
-                </Link>
-                <button
-                  className="btn btn-outline-danger"
-                  disabled={eliminando}
-                  onClick={handleDelete}
-                  type="button"
-                >
-                  {eliminando ? 'Eliminando...' : 'Eliminar'}
-                </button>
-              </div>
-              {eliminarError && (
-                <div className="mt-3">
-                  <AlertMessage variant="error">{eliminarError}</AlertMessage>
-                </div>
-              )}
+          <section aria-label="Datos del videojuego" className="detail-info">
+            <div className="detail-info__meta">
+              <span><IconoMando aria-hidden="true" /> {videojuego.plataforma ?? 'Plataforma sin especificar'}</span>
+              <span>
+                {videojuego.genero
+                  ? ETIQUETAS_GENERO[videojuego.genero]
+                  : 'Género sin especificar'}
+              </span>
             </div>
+            <div className="detail-actions">
+              <Link
+                className="ui-button ui-button--secondary"
+                to={`/videojuegos/${encodeURIComponent(videojuego._id)}/editar`}
+              >
+                Editar
+              </Link>
+              <Link
+                className="ui-button ui-button--primary"
+                to={`/videojuegos/${encodeURIComponent(videojuego._id)}/partidas/nueva`}
+              >
+                Registrar partida
+              </Link>
+              <Boton
+                disabled={eliminando}
+                onClick={() => setConfirmacionAbierta(true)}
+                variante="peligro"
+              >
+                {eliminando ? 'Eliminando...' : 'Eliminar'}
+              </Boton>
+            </div>
+            {eliminarError && (
+              <AlertMessage variant="error">{eliminarError}</AlertMessage>
+            )}
           </section>
 
-          <section aria-labelledby="logros-videojuego" className="mb-4">
-            <h2 className="h4" id="logros-videojuego">
-              Logros
-            </h2>
+          <section aria-labelledby="logros-videojuego" className="detail-block">
+            <header className="detail-block__header">
+              <h2 className="detail-block__heading" id="logros-videojuego">
+                <EtiquetaSeccion>Logros</EtiquetaSeccion>
+              </h2>
+              <Insignia
+                className="achievement-count"
+                texto={`${videojuego.logros.length}/50`}
+                tipo="contador"
+              />
+            </header>
             {videojuego.logros.length >= 50 && (
               <AlertMessage variant="info">
                 Este videojuego ya alcanzó el límite de 50 logros.
               </AlertMessage>
             )}
             {errorValidacionLogro && (
-              <AlertMessage variant="error">
-                {errorValidacionLogro}
-              </AlertMessage>
+              <AlertMessage variant="error">{errorValidacionLogro}</AlertMessage>
             )}
             {errorLogro && (
               <AlertMessage variant="error">{errorLogro}</AlertMessage>
@@ -334,57 +376,54 @@ export function DetalleVideojuegoPage() {
                 Este videojuego aún no tiene logros.
               </AlertMessage>
             ) : (
-              <ul className="list-group">
+              <div className="detail-card-list">
                 {videojuego.logros.map((logro) => (
-                  <li
-                    className="list-group-item d-flex flex-wrap justify-content-between align-items-center gap-2"
-                    key={logro._id}
-                  >
-                    <span>{logro.nombre}</span>
-                    <div className="d-flex align-items-center gap-3">
-                      <div className="form-check mb-0">
-                        <input
-                          checked={logro.obtenido}
-                          className="form-check-input"
-                          disabled={guardandoLogro || logroEnProcesoId !== null}
-                          id={`logro-obtenido-${logro._id}`}
-                          aria-label={`Marcar ${logro.nombre} como obtenido`}
-                          onChange={(event) =>
-                            void handleToggleLogro(
-                              logro._id,
-                              event.target.checked,
-                            )
+                  <CardItem
+                    accion={
+                      <div className="achievement-actions">
+                        <Boton
+                          aria-label={`Cambiar estado de ${logro.nombre}; actualmente ${logro.obtenido ? 'obtenido' : 'pendiente'}`}
+                          disabled={
+                            guardandoLogro || logroEnProcesoId !== null
                           }
-                          type="checkbox"
-                        />
-                        <label
-                          className="form-check-label"
-                          htmlFor={`logro-obtenido-${logro._id}`}
+                          onClick={() =>
+                            void handleToggleLogro(logro._id, !logro.obtenido)
+                          }
+                          variante={logro.obtenido ? 'primario' : 'neutro'}
                         >
-                          Obtenido
-                        </label>
+                          {logroEnProcesoId === logro._id
+                            ? 'Guardando...'
+                            : logro.obtenido
+                              ? 'Obtenido'
+                              : 'Pendiente'}
+                        </Boton>
+                        <Boton
+                          aria-label={`Eliminar logro ${logro.nombre}`}
+                          disabled={
+                            guardandoLogro || logroEnProcesoId !== null
+                          }
+                          onClick={() => void handleDeleteLogro(logro._id)}
+                          variante="peligro"
+                        >
+                          Eliminar
+                        </Boton>
                       </div>
-                      <button
-                        aria-label={`Eliminar logro ${logro.nombre}`}
-                        className="btn btn-sm btn-outline-danger"
-                        disabled={guardandoLogro || logroEnProcesoId !== null}
-                        onClick={() => void handleDeleteLogro(logro._id)}
-                        type="button"
-                      >
-                        {logroEnProcesoId === logro._id
-                          ? 'Guardando...'
-                          : 'Eliminar'}
-                      </button>
-                    </div>
-                  </li>
+                    }
+                    className="detail-item"
+                    icono={<IconoTrofeo />}
+                    key={logro._id}
+                    titulo={logro.nombre}
+                  />
                 ))}
-              </ul>
+              </div>
             )}
-            <form className="mt-3" onSubmit={handleAddLogro} noValidate>
-              <label className="form-label" htmlFor="nuevo-logro">
-                Agregar logro
-              </label>
-              <div className="input-group">
+            <form
+              className="achievement-form"
+              onSubmit={handleAddLogro}
+              noValidate
+            >
+              <label htmlFor="nuevo-logro">Agregar logro</label>
+              <div className="achievement-form__row">
                 <input
                   className="form-control"
                   disabled={
@@ -401,8 +440,7 @@ export function DetalleVideojuegoPage() {
                   type="text"
                   value={nuevoLogroNombre}
                 />
-                <button
-                  className="btn btn-outline-primary"
+                <Boton
                   disabled={
                     guardandoLogro ||
                     logroEnProcesoId !== null ||
@@ -411,20 +449,27 @@ export function DetalleVideojuegoPage() {
                   type="submit"
                 >
                   {guardandoLogro ? 'Guardando...' : 'Agregar'}
-                </button>
+                </Boton>
               </div>
             </form>
           </section>
         </>
       )}
 
-      <section aria-labelledby="resumen-videojuego" className="mb-4">
-        <h2 className="h4" id="resumen-videojuego">
-          Resumen
+      <section aria-labelledby="resumen-videojuego" className="detail-block">
+        <h2 className="detail-block__heading" id="resumen-videojuego">
+          <EtiquetaSeccion>Resumen</EtiquetaSeccion>
         </h2>
-        {resumenLoading && <LoadingMessage message="Cargando resumen..." />}
+        {resumenLoading && <Skeleton variante="resumen" />}
         {!resumenLoading && resumenError && (
-          <AlertMessage variant="error">{resumenError}</AlertMessage>
+          <AlertMessage variant="error">
+            <p>{resumenError}</p>
+            <div className="ui-alert__actions">
+              <Boton onClick={() => setReintentoResumen((count) => count + 1)}>
+                Reintentar
+              </Boton>
+            </div>
+          </AlertMessage>
         )}
         {!resumenLoading && resumen && (
           <>
@@ -433,75 +478,112 @@ export function DetalleVideojuegoPage() {
                 Aún no hay partidas registradas para este videojuego.
               </AlertMessage>
             )}
-            <dl className="row">
-              <dt className="col-sm-4">Total de partidas</dt>
-              <dd className="col-sm-8">{resumen.totalPartidas}</dd>
-              <dt className="col-sm-4">Horas totales</dt>
-              <dd className="col-sm-8">{resumen.horasTotales}</dd>
-              <dt className="col-sm-4">Última partida</dt>
-              <dd className="col-sm-8">
-                {formatDate(resumen.ultimaPartida)}
-              </dd>
-              <dt className="col-sm-4">Avance actual</dt>
-              <dd className="col-sm-8">
-                {resumen.porcentajeAvanceActual}%
-              </dd>
+            <dl className="summary-grid">
+              <div className="summary-stat">
+                <dt>Total de partidas</dt>
+                <dd>{resumen.totalPartidas}</dd>
+              </div>
+              <div className="summary-stat">
+                <dt>Horas totales</dt>
+                <dd>{resumen.horasTotales}</dd>
+              </div>
+              <div className="summary-stat summary-stat--date">
+                <dt>Última partida</dt>
+                <dd>{formatDate(resumen.ultimaPartida)}</dd>
+              </div>
+              <div className="summary-stat summary-stat--progress">
+                <dt>Avance actual</dt>
+                <dd>{resumen.porcentajeAvanceActual} %</dd>
+                <BarraProgreso
+                  etiqueta="Avance actual"
+                  valor={resumen.porcentajeAvanceActual}
+                />
+              </div>
             </dl>
           </>
         )}
       </section>
 
-      <section aria-labelledby="partidas-videojuego">
-        <h2 className="h4" id="partidas-videojuego">
-          Partidas
-        </h2>
-        {partidasLoading && <LoadingMessage message="Cargando partidas..." />}
+      <section aria-labelledby="partidas-videojuego" className="detail-block">
+        <div className="detail-block__header">
+          <h2 className="detail-block__heading" id="partidas-videojuego">
+            <EtiquetaSeccion>Partidas</EtiquetaSeccion>
+          </h2>
+          {videojuego && (
+            <Link
+              className="ui-button ui-button--primary"
+              to={`/videojuegos/${encodeURIComponent(videojuego._id)}/partidas/nueva`}
+            >
+              Registrar partida
+            </Link>
+          )}
+        </div>
+        {partidasLoading && (
+          <Skeleton cantidad={2} variante="tarjeta" />
+        )}
         {!partidasLoading && partidasError && (
-          <AlertMessage variant="error">{partidasError}</AlertMessage>
+          <AlertMessage variant="error">
+            <p>{partidasError}</p>
+            <div className="ui-alert__actions">
+              <Boton onClick={() => setReintentoPartidas((count) => count + 1)}>
+                Reintentar
+              </Boton>
+            </div>
+          </AlertMessage>
         )}
         {!partidasLoading && !partidasError && partidas.length === 0 && (
           <AlertMessage variant="empty">
-            Este videojuego aún no tiene partidas.
+            <p>Este videojuego aún no tiene partidas. Registra la primera.</p>
+            {videojuego && (
+              <div className="ui-alert__actions">
+                <Link
+                  className="ui-button ui-button--primary"
+                  to={`/videojuegos/${encodeURIComponent(videojuego._id)}/partidas/nueva`}
+                >
+                  Registrar la primera partida
+                </Link>
+              </div>
+            )}
           </AlertMessage>
         )}
         {!partidasLoading && !partidasError && partidas.length > 0 && (
-          <div className="table-responsive">
-            <table className="table table-striped align-middle">
-              <thead>
-                <tr>
-                  <th scope="col">Fecha</th>
-                  <th scope="col">Duración</th>
-                  <th scope="col">Avance</th>
-                  <th scope="col">Notas</th>
-                </tr>
-              </thead>
-              <tbody>
-                {partidas.map((partida) => (
-                  <tr key={partida._id}>
-                    <td>{formatDate(partida.fecha)}</td>
-                    <td>{partida.duracionMinutos} min</td>
-                    <td>
-                      {partida.porcentajeAvance === undefined
-                        ? '—'
-                        : `${partida.porcentajeAvance}%`}
-                    </td>
-                    <td>{partida.notas || '—'}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="detail-card-list">
+            {partidas.map((partida) => (
+              <CardItem
+                className="detail-item"
+                detalles={
+                  <>
+                    <span>
+                      <IconoCalendario aria-hidden="true" />
+                      {formatDate(partida.fecha)}
+                    </span>
+                    <span>
+                      <IconoReloj aria-hidden="true" />
+                      {partida.duracionMinutos} min
+                    </span>
+                    {partida.notas && <span>{partida.notas}</span>}
+                  </>
+                }
+                etiquetaProgreso="Avance de la partida"
+                icono={<IconoMando />}
+                key={partida._id}
+                progreso={partida.porcentajeAvance}
+                titulo="Sesión de juego"
+              />
+            ))}
           </div>
         )}
       </section>
+      <ModalConfirmacion
+        abierto={confirmacionAbierta}
+        confirmando={eliminando}
+        onCancelar={() => setConfirmacionAbierta(false)}
+        onConfirmar={() => void handleDelete()}
+        titulo="Eliminar videojuego"
+      >
+        ¿Eliminar &quot;{videojuego?.nombre}&quot;? También se borrarán todas
+        sus partidas. Esta acción no se puede deshacer.
+      </ModalConfirmacion>
     </PageContainer>
-  );
-}
-
-function LoadingMessage({ message }: { message: string }) {
-  return (
-    <div className="d-flex align-items-center gap-2 mb-3" role="status">
-      <span className="spinner-border spinner-border-sm" aria-hidden="true" />
-      <span>{message}</span>
-    </div>
   );
 }
