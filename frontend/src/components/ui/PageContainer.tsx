@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import { EncabezadoPanel } from './EncabezadoPanel';
 
 interface PageContainerProps {
-  title: string;
+  title: ReactNode;
   children?: ReactNode;
 }
 

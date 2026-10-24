@@ -2,7 +2,11 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { listarVideojuegos } from '../api/videojuegosApi';
 import { AlertMessage } from '../components/ui/AlertMessage';
+import { CardItem } from '../components/ui/CardItem';
+import { Insignia } from '../components/ui/Insignia';
 import { PageContainer } from '../components/ui/PageContainer';
+import { Pestanas, type PestanaOpcion } from '../components/ui/Pestanas';
+import { IconoMando, IconoRayo } from '../components/ui/iconos';
 import {
   ESTADOS,
   GENEROS,
@@ -29,6 +33,13 @@ export function ListaVideojuegosPage() {
   const [error, setError] = useState<string | null>(null);
 
   const filtrosActivos = plataforma !== '' || genero !== '' || estado !== '';
+  const opcionesEstado: PestanaOpcion[] = [
+    { valor: '', etiqueta: 'Todos' },
+    ...ESTADOS.map((valor) => ({
+      valor,
+      etiqueta: ETIQUETAS_ESTADO[valor],
+    })),
+  ];
 
   useEffect(() => {
     let cancelled = false;
@@ -70,86 +81,83 @@ export function ListaVideojuegosPage() {
 
   return (
     <PageContainer title="Videojuegos">
-      <div className="d-flex justify-content-end mb-3">
-        <Link className="btn btn-primary" to="/videojuegos/nuevo">
+      <section aria-labelledby="games-hero-title" className="games-hero">
+        <div aria-hidden="true" className="games-hero__rays">
+          <IconoRayo />
+          <IconoRayo />
+          <IconoRayo />
+        </div>
+        <h2 className="games-hero__title" id="games-hero-title">
+          Tu progreso, <span>tu</span> aventura
+        </h2>
+        <p className="games-hero__subtitle">Cada partida cuenta.</p>
+      </section>
+
+      <div className="games-toolbar">
+        <Link className="ui-button ui-button--primary" to="/videojuegos/nuevo">
+          <span aria-hidden="true" className="games-toolbar__plus">+</span>
           Nuevo videojuego
         </Link>
       </div>
 
-      <section aria-label="Filtros de videojuegos" className="card mb-4">
-        <div className="card-body">
-          <h2 className="h5 card-title">Filtrar videojuegos</h2>
-          <div className="row g-3">
-            <div className="col-md-4">
-              <label className="form-label" htmlFor="filtro-plataforma">
-                Plataforma
-              </label>
-              <select
-                className="form-select"
-                id="filtro-plataforma"
-                value={plataforma}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value === '' || isEnumValue(value, PLATAFORMAS)) {
-                    setPlataforma(value);
-                  }
-                }}
-              >
-                <option value="">Todas las plataformas</option>
-                {PLATAFORMAS.map((opcion) => (
-                  <option key={opcion} value={opcion}>
-                    {opcion}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="col-md-4">
-              <label className="form-label" htmlFor="filtro-genero">
-                Género
-              </label>
-              <select
-                className="form-select"
-                id="filtro-genero"
-                value={genero}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value === '' || isEnumValue(value, GENEROS)) {
-                    setGenero(value);
-                  }
-                }}
-              >
-                <option value="">Todos los géneros</option>
-                {GENEROS_CON_ETIQUETA.map(({ valor, etiqueta }) => (
-                  <option key={valor} value={valor}>
-                    {etiqueta}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="col-md-4">
-              <label className="form-label" htmlFor="filtro-estado">
-                Estado
-              </label>
-              <select
-                className="form-select"
-                id="filtro-estado"
-                value={estado}
-                onChange={(event) => {
-                  const value = event.target.value;
-                  if (value === '' || isEnumValue(value, ESTADOS)) {
-                    setEstado(value);
-                  }
-                }}
-              >
-                <option value="">Todos los estados</option>
-                {ESTADOS.map((opcion) => (
-                  <option key={opcion} value={opcion}>
-                    {ETIQUETAS_ESTADO[opcion]}
-                  </option>
-                ))}
-              </select>
-            </div>
+      <section aria-label="Filtros de videojuegos" className="games-filters">
+        <h2 className="games-filters__title">Filtrar videojuegos</h2>
+        <div className="games-filter-selects">
+          <div className="games-filter-field">
+            <label htmlFor="filtro-plataforma">Plataforma</label>
+            <select
+              className="form-select"
+              id="filtro-plataforma"
+              value={plataforma}
+              onChange={(event) => {
+                const value = event.target.value;
+                if (value === '' || isEnumValue(value, PLATAFORMAS)) {
+                  setPlataforma(value);
+                }
+              }}
+            >
+              <option value="">Todas las plataformas</option>
+              {PLATAFORMAS.map((opcion) => (
+                <option key={opcion} value={opcion}>
+                  {opcion}
+                </option>
+              ))}
+            </select>
           </div>
+          <div className="games-filter-field">
+            <label htmlFor="filtro-genero">Género</label>
+            <select
+              className="form-select"
+              id="filtro-genero"
+              value={genero}
+              onChange={(event) => {
+                const value = event.target.value;
+                if (value === '' || isEnumValue(value, GENEROS)) {
+                  setGenero(value);
+                }
+              }}
+            >
+              <option value="">Todos los géneros</option>
+              {GENEROS_CON_ETIQUETA.map(({ valor, etiqueta }) => (
+                <option key={valor} value={valor}>
+                  {etiqueta}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+        <div className="games-filter-state">
+          <span className="games-filter-state__label">Estado</span>
+          <Pestanas
+            etiqueta="Filtrar por estado"
+            opciones={opcionesEstado}
+            onChange={(value) => {
+              if (value === '' || isEnumValue(value, ESTADOS)) {
+                setEstado(value);
+              }
+            }}
+            valor={estado}
+          />
         </div>
       </section>
 
@@ -171,39 +179,55 @@ export function ListaVideojuegosPage() {
       )}
 
       {!loading && !error && videojuegos.length > 0 && (
-        <div className="table-responsive">
-          <table className="table table-striped table-hover align-middle">
-            <thead>
-              <tr>
-                <th scope="col">Nombre</th>
-                <th scope="col">Plataforma</th>
-                <th scope="col">Género</th>
-                <th scope="col">Estado</th>
-              </tr>
-            </thead>
-            <tbody>
-              {videojuegos.map((videojuego) => (
-                <tr key={videojuego._id}>
-                  <td>
-                    <Link to={`/videojuegos/${encodeURIComponent(videojuego._id)}`}>
-                      {videojuego.nombre}
-                    </Link>
-                  </td>
-                  <td>{videojuego.plataforma ?? '—'}</td>
-                  <td>
+        <div aria-label="Videojuegos" className="games-grid">
+          {videojuegos.map((videojuego) => (
+            <CardItem
+              accion={
+                <Link
+                  aria-label={`Ver detalles de ${videojuego.nombre}`}
+                  className="ui-button ui-button--secondary games-card__link"
+                  to={`/videojuegos/${encodeURIComponent(videojuego._id)}`}
+                >
+                  Ver
+                </Link>
+              }
+              className="games-card"
+              detalles={
+                <>
+                  <span>
+                    {videojuego.plataforma ?? 'Plataforma sin especificar'}
+                  </span>
+                  <span>
                     {videojuego.genero
                       ? ETIQUETAS_GENERO[videojuego.genero]
-                      : '—'}
-                  </td>
-                  <td>
+                      : 'Género sin especificar'}
+                  </span>
+                  <span
+                    className={`game-status game-status--${videojuego.estado ?? 'sin-estado'}`}
+                  >
                     {videojuego.estado
                       ? ETIQUETAS_ESTADO[videojuego.estado]
-                      : '—'}
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+                      : 'Sin estado'}
+                  </span>
+                </>
+              }
+              icono={<IconoMando />}
+              insignia={
+                videojuego.estado === 'completado' ? (
+                  <Insignia texto="100 %" />
+                ) : undefined
+              }
+              key={videojuego._id}
+              titulo={
+                <Link
+                  className="games-card__title-link"
+                  to={`/videojuegos/${encodeURIComponent(videojuego._id)}`}
+                >
+                  {videojuego.nombre}
+                </Link>
+              }
+            />
+          ))}
         </div>
       )}
     </PageContainer>

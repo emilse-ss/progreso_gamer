@@ -328,7 +328,12 @@
 }
 
 .ui-panel-heading__title {
+  align-items: center;
+  display: flex;
   font-size: var(--texto-28);
+  flex-wrap: wrap;
+  gap: var(--esp-2) var(--esp-3);
+  justify-content: center;
   margin: 0;
 }
 
@@ -607,6 +612,383 @@
   color: var(--amarillo);
 }
 
+.games-hero {
+  background-color: var(--indigo);
+  background-image: repeating-conic-gradient(
+    from -5deg at 50% 55%,
+    var(--indigo-oscuro) 0deg 12deg,
+    var(--indigo) 12deg 24deg
+  );
+  border: var(--borde-grueso);
+  border-radius: var(--radio-l);
+  color: var(--blanco);
+  min-height: calc(var(--esp-8) * 4);
+  overflow: hidden;
+  padding: var(--esp-5);
+  position: relative;
+  text-align: center;
+}
+
+.games-hero__title {
+  font-size: var(--texto-28);
+  font-weight: 900;
+  line-height: 1;
+  position: relative;
+  z-index: 1;
+}
+
+.games-hero__title span {
+  background: var(--blanco);
+  border-radius: var(--radio-m);
+  color: var(--rojo-oscuro);
+  padding-inline: var(--esp-2);
+}
+
+.games-hero__subtitle {
+  font-size: var(--texto-14);
+  font-weight: 700;
+  margin-top: var(--esp-2);
+  position: relative;
+  z-index: 1;
+}
+
+.games-hero__rays {
+  color: var(--amarillo);
+  inset: 0;
+  pointer-events: none;
+  position: absolute;
+}
+
+.games-hero__rays .ui-icon {
+  height: var(--icono-m);
+  position: absolute;
+  width: var(--icono-m);
+}
+
+.games-hero__rays .ui-icon:nth-child(1) {
+  left: var(--esp-4);
+  top: var(--esp-4);
+  transform: rotate(calc(-1 * var(--inclinacion-etiqueta)));
+}
+
+.games-hero__rays .ui-icon:nth-child(2) {
+  right: var(--esp-5);
+  top: var(--esp-3);
+  transform: rotate(var(--inclinacion-etiqueta));
+}
+
+.games-hero__rays .ui-icon:nth-child(3) {
+  bottom: var(--esp-3);
+  left: 50%;
+  transform: rotate(calc(var(--inclinacion-etiqueta) * 2));
+}
+
+.games-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-block: var(--esp-4);
+}
+
+.games-toolbar__plus {
+  font-size: var(--texto-20);
+  line-height: 1;
+}
+
+.games-filters {
+  background: var(--gris-card);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-l);
+  margin-bottom: var(--esp-5);
+  padding: var(--esp-4);
+}
+
+.games-filters__title {
+  font-size: var(--texto-20);
+  margin-bottom: var(--esp-3);
+}
+
+.games-filter-selects {
+  display: grid;
+  gap: var(--esp-3);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.games-filter-field {
+  display: grid;
+  gap: var(--esp-2);
+}
+
+.games-filter-field label,
+.games-filter-state__label {
+  font-size: var(--texto-14);
+  font-weight: 800;
+}
+
+.games-filter-field .form-select {
+  background-color: var(--crema);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  color: var(--negro);
+  min-height: var(--alto-tactil);
+  padding: var(--esp-2) var(--esp-3);
+}
+
+.games-filter-state {
+  display: grid;
+  gap: var(--esp-2);
+  margin-top: var(--esp-4);
+}
+
+.games-filter-state .ui-tabs {
+  gap: var(--esp-2);
+}
+
+.games-filter-state .ui-tabs__tab {
+  flex: 1 1 auto;
+  justify-content: center;
+}
+
+.games-grid {
+  display: grid;
+  gap: var(--esp-4);
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.games-card {
+  min-width: 0;
+}
+
+.games-card .ui-card-item__icon .ui-icon {
+  color: var(--indigo);
+  height: var(--icono-m);
+  width: var(--icono-m);
+}
+
+.games-card__title-link {
+  color: var(--negro);
+  text-decoration: none;
+}
+
+.games-card__title-link:hover {
+  color: var(--indigo-oscuro);
+  text-decoration: underline;
+  text-decoration-thickness: var(--ancho-linea-fina);
+  text-underline-offset: var(--esp-1);
+}
+
+.games-card__link {
+  min-width: var(--alto-tactil);
+}
+
+.game-status {
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  display: inline-flex;
+  font-size: var(--texto-12);
+  font-weight: 800;
+  line-height: 1.2;
+  padding: var(--esp-1) var(--esp-2);
+  white-space: nowrap;
+}
+
+.game-status--jugando {
+  background: var(--estado-jugando);
+  color: var(--estado-jugando-texto);
+}
+
+.game-status--pausado {
+  background: var(--estado-pausado);
+  color: var(--estado-pausado-texto);
+}
+
+.game-status--completado {
+  background: var(--estado-completado);
+  color: var(--estado-completado-texto);
+}
+
+.game-status--abandonado {
+  background: var(--estado-abandonado);
+  color: var(--estado-abandonado-texto);
+}
+
+.game-status--sin-estado {
+  background: var(--gris-card);
+  color: var(--negro);
+}
+
+.detail-heading__status {
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-14);
+  font-style: normal;
+  font-weight: 800;
+}
+
+.detail-info,
+.detail-block {
+  background: var(--gris-card);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-l);
+  margin-bottom: var(--esp-4);
+  padding: var(--esp-4);
+}
+
+.detail-info__meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2) var(--esp-4);
+  margin-bottom: var(--esp-4);
+}
+
+.detail-info__meta span {
+  align-items: center;
+  display: inline-flex;
+  font-size: var(--texto-14);
+  font-weight: 700;
+  gap: var(--esp-2);
+}
+
+.detail-info__meta .ui-icon {
+  height: var(--icono-s);
+  width: var(--icono-s);
+}
+
+.detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+}
+
+.detail-block__heading {
+  margin-bottom: var(--esp-4);
+}
+
+.detail-block__header {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+  justify-content: space-between;
+  margin-bottom: var(--esp-4);
+}
+
+.detail-block__header .detail-block__heading {
+  margin-bottom: 0;
+}
+
+.detail-card-list {
+  display: grid;
+  gap: var(--esp-3);
+}
+
+.detail-item {
+  background: var(--crema);
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.detail-item .ui-card-item__action {
+  grid-column: 1 / -1;
+  width: 100%;
+}
+
+.detail-item .ui-card-item__icon .ui-icon {
+  color: var(--indigo);
+  height: var(--icono-m);
+  width: var(--icono-m);
+}
+
+.detail-item .ui-card-item__details .ui-icon {
+  flex: 0 0 auto;
+  height: var(--icono-s);
+  width: var(--icono-s);
+}
+
+.detail-item .ui-card-item__details span {
+  align-items: center;
+  display: inline-flex;
+  gap: var(--esp-1);
+}
+
+.summary-grid {
+  display: grid;
+  gap: var(--esp-3);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.summary-stat {
+  background: var(--crema);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  min-width: 0;
+  padding: var(--esp-3);
+}
+
+.summary-stat dt {
+  font-size: var(--texto-12);
+  font-weight: 800;
+}
+
+.summary-stat dd {
+  font-family: var(--fuente-titulo);
+  font-size: var(--texto-40);
+  font-style: italic;
+  font-weight: 900;
+  line-height: 1.1;
+  overflow-wrap: anywhere;
+}
+
+.summary-stat--date dd {
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-14);
+  font-style: normal;
+  font-weight: 700;
+  margin-top: var(--esp-2);
+}
+
+.summary-stat--progress {
+  grid-column: 1 / -1;
+}
+
+.summary-stat--progress .ui-progress {
+  margin-top: var(--esp-2);
+}
+
+.achievement-count {
+  font-size: var(--texto-14);
+}
+
+.achievement-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+}
+
+.achievement-form {
+  display: grid;
+  gap: var(--esp-2);
+  margin-top: var(--esp-4);
+}
+
+.achievement-form label {
+  font-size: var(--texto-14);
+  font-weight: 800;
+}
+
+.achievement-form__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2);
+}
+
+.achievement-form .form-control {
+  background: var(--crema);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  color: var(--negro);
+  flex: 1 1 0;
+  min-height: var(--alto-tactil);
+  padding: var(--esp-2) var(--esp-3);
+}
+
 @media (min-width: 48rem) {
   .app-navbar__inner {
     flex-wrap: nowrap;
@@ -645,6 +1027,44 @@
 
   .page-panel__content {
     padding: var(--esp-5) var(--esp-4);
+  }
+
+  .games-hero {
+    min-height: calc(var(--esp-8) * 6);
+    padding: var(--esp-8);
+  }
+
+  .games-hero__title {
+    font-size: var(--texto-40);
+  }
+
+  .games-hero__subtitle {
+    font-size: var(--texto-16);
+  }
+
+  .games-filter-selects {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .games-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .summary-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .summary-stat--progress {
+    grid-column: auto;
+  }
+
+  .detail-item {
+    grid-template-columns: auto minmax(0, 1fr) auto;
+  }
+
+  .detail-item .ui-card-item__action {
+    grid-column: auto;
+    width: auto;
   }
 }
 
