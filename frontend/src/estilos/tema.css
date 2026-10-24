@@ -50,6 +50,14 @@
   --texto-40: 40px;
 
   --ancho-contenido: 960px;
+  --ancho-panel-externo: calc(var(--ancho-contenido) + var(--esp-8));
+  --padding-panel-movil: var(--esp-4);
+  --padding-panel-escritorio: var(--esp-6);
+  --altura-navbar: calc(var(--esp-8) + var(--esp-6));
+  --espacio-navbar: var(--esp-2);
+  --tamano-menu-icono: var(--esp-6);
+  --radio-menu-item: var(--radio-m);
+  --z-navbar: 100;
   --ancho-foco: 3px;
   --offset-foco: 2px;
   --alto-tactil: calc(var(--esp-8) + var(--esp-3));

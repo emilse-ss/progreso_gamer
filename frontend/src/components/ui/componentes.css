@@ -416,6 +416,238 @@
   gap: var(--esp-3);
 }
 
+.app-shell {
+  background-color: var(--crema);
+  isolation: isolate;
+  min-height: 100vh;
+  overflow: hidden;
+  position: relative;
+}
+
+.app-navbar {
+  background: var(--rojo);
+  color: var(--blanco);
+  position: relative;
+  z-index: var(--z-navbar);
+}
+
+.app-navbar__inner {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+  margin-inline: auto;
+  max-width: var(--ancho-panel-externo);
+  min-height: var(--altura-navbar);
+  padding: var(--esp-2) var(--padding-panel-movil);
+}
+
+.app-navbar__brand {
+  color: var(--blanco);
+  flex: 1 1 auto;
+  font-family: var(--fuente-titulo);
+  font-size: var(--texto-20);
+  font-style: italic;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+}
+
+.app-navbar__toggle {
+  align-items: center;
+  background: var(--rojo-oscuro);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  color: var(--blanco);
+  display: inline-flex;
+  height: var(--alto-tactil);
+  justify-content: center;
+  min-width: var(--alto-tactil);
+}
+
+.app-navbar__toggle-icon {
+  display: grid;
+  gap: var(--esp-1);
+  width: var(--tamano-menu-icono);
+}
+
+.app-navbar__toggle-icon span {
+  background: var(--blanco);
+  border-radius: var(--esp-1);
+  height: var(--ancho-foco);
+  width: 100%;
+}
+
+.app-navbar__links {
+  display: none;
+  flex: 1 0 100%;
+  flex-direction: column;
+  gap: var(--espacio-navbar);
+  padding-block: var(--esp-2);
+}
+
+.app-navbar__links.is-open {
+  display: flex;
+}
+
+.app-navbar__link {
+  border-radius: var(--radio-menu-item);
+  color: var(--blanco);
+  display: flex;
+  flex-direction: column;
+  font-weight: 800;
+  line-height: 1.2;
+  padding: var(--esp-2) var(--esp-3);
+  text-decoration: none;
+}
+
+.app-navbar__link small {
+  color: inherit;
+  font-size: var(--texto-12);
+  font-weight: 400;
+}
+
+.app-navbar__link:hover,
+.app-navbar__link:focus-visible {
+  color: var(--blanco);
+  text-decoration: underline;
+  text-decoration-thickness: var(--ancho-linea-fina);
+  text-underline-offset: var(--esp-1);
+}
+
+.app-navbar__link.is-active {
+  background: var(--amarillo);
+  color: var(--negro);
+}
+
+.app-main {
+  margin-inline: auto;
+  max-width: var(--ancho-panel-externo);
+  padding: var(--esp-5) var(--padding-panel-movil);
+  position: relative;
+  z-index: 1;
+}
+
+.app-main > .ui-alert {
+  margin-bottom: var(--esp-4);
+}
+
+.page-panel {
+  background: var(--crema);
+  border: var(--borde-grueso);
+  border-color: var(--carbon);
+  border-radius: var(--radio-l);
+  box-shadow: inset 0 0 0 var(--ancho-linea-fina) var(--gris-card);
+  margin-inline: auto;
+  max-width: var(--ancho-contenido);
+  padding: var(--esp-2);
+}
+
+.page-panel__content {
+  padding: var(--esp-4) var(--esp-2);
+}
+
+.page-panel > .ui-panel-heading {
+  width: 100%;
+}
+
+.app-decoration {
+  color: var(--amarillo);
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  position: absolute;
+  z-index: 0;
+}
+
+.app-decoration .ui-icon {
+  height: var(--icono-m);
+  opacity: 0.55;
+  position: absolute;
+  width: var(--icono-m);
+}
+
+.app-decoration .ui-icon:nth-child(1) {
+  right: var(--esp-5);
+  top: calc(var(--altura-navbar) + var(--esp-4));
+}
+
+.app-decoration .ui-icon:nth-child(2) {
+  left: var(--esp-3);
+  top: 55%;
+}
+
+.app-decoration .ui-icon:nth-child(3) {
+  bottom: var(--esp-5);
+  right: var(--esp-8);
+}
+
+.app-footer {
+  background: var(--carbon);
+  color: var(--blanco);
+  margin-top: auto;
+  position: relative;
+  z-index: 1;
+}
+
+.app-footer__inner {
+  align-items: center;
+  display: flex;
+  font-size: var(--texto-14);
+  font-weight: 700;
+  gap: var(--esp-2);
+  justify-content: center;
+  margin-inline: auto;
+  max-width: var(--ancho-panel-externo);
+  padding: var(--esp-4) var(--padding-panel-movil);
+  text-align: center;
+}
+
+.app-footer__inner .ui-icon {
+  color: var(--amarillo);
+}
+
+@media (min-width: 48rem) {
+  .app-navbar__inner {
+    flex-wrap: nowrap;
+    padding-inline: var(--padding-panel-escritorio);
+  }
+
+  .app-navbar__brand {
+    flex: 0 0 auto;
+    margin-right: auto;
+  }
+
+  .app-navbar__toggle {
+    display: none;
+  }
+
+  .app-navbar__links {
+    align-items: stretch;
+    display: flex;
+    flex: 0 1 auto;
+    flex-direction: row;
+    padding-block: 0;
+  }
+
+  .app-navbar__link {
+    justify-content: center;
+    min-width: var(--alto-tactil);
+  }
+
+  .app-main {
+    padding: var(--esp-6) var(--padding-panel-escritorio);
+  }
+
+  .page-panel {
+    padding: var(--esp-3);
+  }
+
+  .page-panel__content {
+    padding: var(--esp-5) var(--esp-4);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ui-button,
   .ui-progress__fill {
