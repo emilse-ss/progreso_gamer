@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './estilos/tema.css';
+import './components/ui/componentes.css';
 import './api/config';
 import { App } from './App';
 

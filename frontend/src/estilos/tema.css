@@ -10,6 +10,7 @@
   --naranja: #f7931e;
   --morado: #9b59b6;
   --negro: #1a1a1a;
+  --blanco: #fff;
   --gris-card: #f0f0f0;
   --crema: #fbf7e8;
   --carbon: #3a3a3c;
@@ -51,6 +52,18 @@
   --ancho-contenido: 960px;
   --ancho-foco: 3px;
   --offset-foco: 2px;
+  --alto-tactil: calc(var(--esp-8) + var(--esp-3));
+  --icono-s: var(--esp-4);
+  --icono-m: var(--esp-6);
+  --icono-l: calc(var(--esp-8) + var(--esp-2));
+  --ancho-trazo-icono: 2;
+  --ancho-linea-fina: 1px;
+  --inclinacion-etiqueta: 12deg;
+  --opacidad-overlay: 0.72;
+  --duracion-skeleton: 1.2s;
+  --duracion-transicion: 160ms;
+  --negro-rgb: 26, 26, 26;
+  --z-modal: 1050;
 
   --bs-primary: var(--amarillo);
   --bs-primary-rgb: 255, 213, 0;
@@ -71,6 +84,7 @@
   --bs-border-radius-lg: var(--radio-l);
   --bs-border-radius-xl: var(--radio-l);
   --bs-border-radius-xxl: var(--radio-l);
+  --bs-btn-border-radius: var(--radio-m);
 }
 
 *,
