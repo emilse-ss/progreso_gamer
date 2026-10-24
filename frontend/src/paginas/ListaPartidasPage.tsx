@@ -7,6 +7,7 @@ import { CardItem } from '../components/ui/CardItem';
 import { IconoCalendario, IconoMando, IconoReloj } from '../components/ui/iconos';
 import { ModalConfirmacion } from '../components/ui/ModalConfirmacion';
 import { PageContainer } from '../components/ui/PageContainer';
+import { Skeleton } from '../components/ui/Skeleton';
 import type { PartidaListado } from '../types';
 
 export function ListaPartidasPage() {
@@ -17,6 +18,7 @@ export function ListaPartidasPage() {
   const [eliminandoId, setEliminandoId] = useState<string | null>(null);
   const [partidaPendienteEliminar, setPartidaPendienteEliminar] =
     useState<PartidaListado | null>(null);
+  const [reintento, setReintento] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -43,7 +45,7 @@ export function ListaPartidasPage() {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [reintento]);
 
   async function handleDelete(partida: PartidaListado) {
     setPartidaPendienteEliminar(null);
@@ -75,15 +77,26 @@ export function ListaPartidasPage() {
 
       {errorEliminar && <AlertMessage variant="error">{errorEliminar}</AlertMessage>}
       {loading && (
-        <div className="d-flex align-items-center gap-2" role="status">
-          <span className="spinner-border spinner-border-sm" aria-hidden="true" />
-          <span>Cargando partidas...</span>
-        </div>
+        <Skeleton cantidad={4} className="sessions-loading" variante="tarjeta" />
       )}
-      {!loading && error && <AlertMessage variant="error">{error}</AlertMessage>}
+      {!loading && error && (
+        <AlertMessage variant="error">
+          <p>{error}</p>
+          <div className="ui-alert__actions">
+            <Boton onClick={() => setReintento((count) => count + 1)}>
+              Reintentar
+            </Boton>
+          </div>
+        </AlertMessage>
+      )}
       {!loading && !error && partidas.length === 0 && (
         <AlertMessage variant="empty">
-          Aún no hay partidas registradas.
+          <p>Aún no tienes partidas. Registra la primera.</p>
+          <div className="ui-alert__actions">
+            <Link className="ui-button ui-button--primary" to="/partidas/nueva">
+              Registrar la primera partida
+            </Link>
+          </div>
         </AlertMessage>
       )}
       {!loading && !error && partidas.length > 0 && (

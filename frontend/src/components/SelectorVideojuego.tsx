@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
+import { Link } from 'react-router-dom';
 import { listarVideojuegos } from '../api/videojuegosApi';
 import { AlertMessage } from './ui/AlertMessage';
+import { Boton } from './ui/Boton';
+import { Skeleton } from './ui/Skeleton';
 import type { Videojuego } from '../types';
 
 interface SelectorVideojuegoProps {
@@ -21,6 +24,7 @@ export function SelectorVideojuego({
   const [videojuegos, setVideojuegos] = useState<Videojuego[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reintento, setReintento] = useState(0);
 
   useEffect(() => {
     let cancelled = false;
@@ -65,7 +69,7 @@ export function SelectorVideojuego({
       cancelled = true;
       onReadyChange(false);
     };
-  }, [onChange, onReadyChange, videojuegoIdFijo]);
+  }, [onChange, onReadyChange, videojuegoIdFijo, reintento]);
 
   return (
     <div className="ui-form__field ui-form__selector">
@@ -73,15 +77,29 @@ export function SelectorVideojuego({
         Videojuego <span aria-hidden="true">*</span>
       </label>
       {loading && (
-        <div className="d-flex align-items-center gap-2" role="status">
-          <span className="spinner-border spinner-border-sm" aria-hidden="true" />
-          <span>Cargando videojuegos...</span>
-        </div>
+        <Skeleton cantidad={1} variante="formulario" />
       )}
-      {!loading && error && <AlertMessage variant="error">{error}</AlertMessage>}
+      {!loading && error && (
+        <AlertMessage variant="error">
+          <p>{error}</p>
+          <div className="ui-alert__actions">
+            <Boton onClick={() => setReintento((count) => count + 1)}>
+              Reintentar
+            </Boton>
+          </div>
+        </AlertMessage>
+      )}
       {!loading && !error && videojuegos.length === 0 && (
         <AlertMessage variant="empty">
-          Primero debes registrar un videojuego.
+          <p>Primero debes registrar un videojuego.</p>
+          <div className="ui-alert__actions">
+            <Link
+              className="ui-button ui-button--primary"
+              to="/videojuegos/nuevo"
+            >
+              Nuevo videojuego
+            </Link>
+          </div>
         </AlertMessage>
       )}
       {!loading && !error && videojuegos.length > 0 && (

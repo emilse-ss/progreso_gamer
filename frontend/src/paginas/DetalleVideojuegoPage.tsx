@@ -18,6 +18,7 @@ import { EtiquetaSeccion } from '../components/ui/EtiquetaSeccion';
 import { Insignia } from '../components/ui/Insignia';
 import { ModalConfirmacion } from '../components/ui/ModalConfirmacion';
 import { PageContainer } from '../components/ui/PageContainer';
+import { Skeleton } from '../components/ui/Skeleton';
 import { IconoCalendario, IconoMando, IconoReloj, IconoTrofeo } from '../components/ui/iconos';
 import type {
   PartidaListado,
@@ -73,6 +74,9 @@ export function DetalleVideojuegoPage() {
   const [partidas, setPartidas] = useState<PartidaListado[]>([]);
   const [partidasLoading, setPartidasLoading] = useState(true);
   const [partidasError, setPartidasError] = useState<string | null>(null);
+  const [reintentoVideojuego, setReintentoVideojuego] = useState(0);
+  const [reintentoResumen, setReintentoResumen] = useState(0);
+  const [reintentoPartidas, setReintentoPartidas] = useState(0);
   const [eliminando, setEliminando] = useState(false);
   const [confirmacionAbierta, setConfirmacionAbierta] = useState(false);
   const [eliminarError, setEliminarError] = useState<string | null>(null);
@@ -117,7 +121,7 @@ export function DetalleVideojuegoPage() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, reintentoVideojuego]);
 
   useEffect(() => {
     if (!id) {
@@ -150,7 +154,7 @@ export function DetalleVideojuegoPage() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, reintentoResumen]);
 
   useEffect(() => {
     if (!id) {
@@ -185,7 +189,7 @@ export function DetalleVideojuegoPage() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, reintentoPartidas]);
 
   async function handleDelete() {
     if (!id || !videojuego) {
@@ -292,11 +296,20 @@ export function DetalleVideojuegoPage() {
 
   return (
     <PageContainer title={title}>
-      {videojuegoLoading && (
-        <LoadingMessage message="Cargando videojuego..." />
-      )}
+      {videojuegoLoading && <Skeleton variante="detalle" />}
       {!videojuegoLoading && videojuegoError && (
-        <AlertMessage variant="error">{videojuegoError}</AlertMessage>
+        <AlertMessage variant="error">
+          <p>{videojuegoError}</p>
+          <div className="ui-alert__actions">
+            <Boton
+              onClick={() =>
+                setReintentoVideojuego((count) => count + 1)
+              }
+            >
+              Reintentar
+            </Boton>
+          </div>
+        </AlertMessage>
       )}
 
       {!videojuegoLoading && videojuego && (
@@ -447,9 +460,16 @@ export function DetalleVideojuegoPage() {
         <h2 className="detail-block__heading" id="resumen-videojuego">
           <EtiquetaSeccion>Resumen</EtiquetaSeccion>
         </h2>
-        {resumenLoading && <LoadingMessage message="Cargando resumen..." />}
+        {resumenLoading && <Skeleton variante="resumen" />}
         {!resumenLoading && resumenError && (
-          <AlertMessage variant="error">{resumenError}</AlertMessage>
+          <AlertMessage variant="error">
+            <p>{resumenError}</p>
+            <div className="ui-alert__actions">
+              <Boton onClick={() => setReintentoResumen((count) => count + 1)}>
+                Reintentar
+              </Boton>
+            </div>
+          </AlertMessage>
         )}
         {!resumenLoading && resumen && (
           <>
@@ -498,13 +518,32 @@ export function DetalleVideojuegoPage() {
             </Link>
           )}
         </div>
-        {partidasLoading && <LoadingMessage message="Cargando partidas..." />}
+        {partidasLoading && (
+          <Skeleton cantidad={2} variante="tarjeta" />
+        )}
         {!partidasLoading && partidasError && (
-          <AlertMessage variant="error">{partidasError}</AlertMessage>
+          <AlertMessage variant="error">
+            <p>{partidasError}</p>
+            <div className="ui-alert__actions">
+              <Boton onClick={() => setReintentoPartidas((count) => count + 1)}>
+                Reintentar
+              </Boton>
+            </div>
+          </AlertMessage>
         )}
         {!partidasLoading && !partidasError && partidas.length === 0 && (
           <AlertMessage variant="empty">
-            Este videojuego aún no tiene partidas.
+            <p>Este videojuego aún no tiene partidas. Registra la primera.</p>
+            {videojuego && (
+              <div className="ui-alert__actions">
+                <Link
+                  className="ui-button ui-button--primary"
+                  to={`/videojuegos/${encodeURIComponent(videojuego._id)}/partidas/nueva`}
+                >
+                  Registrar la primera partida
+                </Link>
+              </div>
+            )}
           </AlertMessage>
         )}
         {!partidasLoading && !partidasError && partidas.length > 0 && (
@@ -546,14 +585,5 @@ export function DetalleVideojuegoPage() {
         sus partidas. Esta acción no se puede deshacer.
       </ModalConfirmacion>
     </PageContainer>
-  );
-}
-
-function LoadingMessage({ message }: { message: string }) {
-  return (
-    <div className="d-flex align-items-center gap-2 mb-3" role="status">
-      <span className="spinner-border spinner-border-sm" aria-hidden="true" />
-      <span>{message}</span>
-    </div>
   );
 }

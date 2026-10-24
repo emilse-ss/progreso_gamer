@@ -6,14 +6,10 @@ import { ListaVideojuegosPage } from './paginas/ListaVideojuegosPage';
 import { NotFoundPage } from './paginas/NotFoundPage';
 import { PartidaFormPage } from './paginas/PartidaFormPage';
 import { VideojuegoFormPage } from './paginas/VideojuegoFormPage';
-import { EstilosPreview } from './components/ui/EstilosPreview';
 
 export function App() {
   return (
     <Routes>
-      {import.meta.env.DEV && (
-        <Route path="/__estilos" element={<EstilosPreview />} />
-      )}
       <Route element={<AppLayout />}>
         <Route path="/" element={<Navigate to="/videojuegos" replace />} />
         <Route path="/videojuegos" element={<ListaVideojuegosPage />} />

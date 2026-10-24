@@ -1,10 +1,12 @@
 import { useCallback, useEffect, useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { crearPartida } from '../api/partidasApi';
 import { obtenerResumenVideojuego } from '../api/videojuegosApi';
 import { SelectorVideojuego } from '../components/SelectorVideojuego';
 import { AlertMessage } from '../components/ui/AlertMessage';
+import { Boton } from '../components/ui/Boton';
 import { PageContainer } from '../components/ui/PageContainer';
+import { Skeleton } from '../components/ui/Skeleton';
 import type { PartidaInput, VideojuegoResumenResponse } from '../types';
 import { PartidaForm } from './PartidaForm';
 
@@ -28,6 +30,7 @@ export function PartidaFormPage() {
   const [resumenSeleccionado, setResumenSeleccionado] =
     useState<ResumenSeleccionado | null>(null);
   const [errorResumen, setErrorResumen] = useState<ErrorResumen | null>(null);
+  const [reintentoResumen, setReintentoResumen] = useState(0);
 
   const videojuegoSeleccionado = id ?? videojuegoId;
   const resumenActual =
@@ -78,7 +81,7 @@ export function PartidaFormPage() {
     return () => {
       cancelled = true;
     };
-  }, [selectorListo, videojuegoSeleccionado]);
+  }, [selectorListo, videojuegoSeleccionado, reintentoResumen]);
 
   async function handleSubmit(input: Omit<PartidaInput, 'videojuego'>) {
     if (!videojuegoSeleccionado) {
@@ -114,13 +117,23 @@ export function PartidaFormPage() {
       {(id ?? videojuegoId) && selectorListo && (
         <>
           {resumenCargando && (
-            <div className="d-flex align-items-center gap-2 mb-3" role="status">
-              <span className="spinner-border spinner-border-sm" aria-hidden="true" />
-              <span>Cargando avance actual...</span>
-            </div>
+            <Skeleton
+              cantidad={1}
+              className="partida-resumen-loading"
+              variante="formulario"
+            />
           )}
           {errorResumenActual && (
-            <AlertMessage variant="error">{errorResumenActual}</AlertMessage>
+            <AlertMessage variant="error">
+              <p>{errorResumenActual}</p>
+              <div className="ui-alert__actions">
+                <Boton
+                  onClick={() => setReintentoResumen((count) => count + 1)}
+                >
+                  Reintentar
+                </Boton>
+              </div>
+            </AlertMessage>
           )}
           <PartidaForm
             avanceActual={resumenActual?.porcentajeAvanceActual ?? null}
@@ -140,7 +153,15 @@ export function PartidaFormPage() {
       )}
       {!(id ?? videojuegoId) && selectorListo && (
         <AlertMessage variant="empty">
-          Selecciona un videojuego para registrar una partida.
+          <p>Selecciona un videojuego para registrar una partida.</p>
+          <div className="ui-alert__actions">
+            <Link
+              className="ui-button ui-button--primary"
+              to="/videojuegos/nuevo"
+            >
+              Nuevo videojuego
+            </Link>
+          </div>
         </AlertMessage>
       )}
     </PageContainer>

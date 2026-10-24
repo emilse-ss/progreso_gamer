@@ -2,10 +2,12 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { listarVideojuegos } from '../api/videojuegosApi';
 import { AlertMessage } from '../components/ui/AlertMessage';
+import { Boton } from '../components/ui/Boton';
 import { CardItem } from '../components/ui/CardItem';
 import { Insignia } from '../components/ui/Insignia';
 import { PageContainer } from '../components/ui/PageContainer';
 import { Pestanas, type PestanaOpcion } from '../components/ui/Pestanas';
+import { Skeleton } from '../components/ui/Skeleton';
 import { IconoMando, IconoRayo } from '../components/ui/iconos';
 import {
   ESTADOS,
@@ -31,6 +33,7 @@ export function ListaVideojuegosPage() {
   const [videojuegos, setVideojuegos] = useState<Videojuego[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [reintento, setReintento] = useState(0);
 
   const filtrosActivos = plataforma !== '' || genero !== '' || estado !== '';
   const opcionesEstado: PestanaOpcion[] = [
@@ -77,7 +80,7 @@ export function ListaVideojuegosPage() {
     return () => {
       cancelled = true;
     };
-  }, [plataforma, genero, estado]);
+  }, [plataforma, genero, estado, reintento]);
 
   return (
     <PageContainer title="Videojuegos">
@@ -162,19 +165,44 @@ export function ListaVideojuegosPage() {
       </section>
 
       {loading && (
-        <div className="d-flex align-items-center gap-2" role="status">
-          <span className="spinner-border spinner-border-sm" aria-hidden="true" />
-          <span>Cargando videojuegos...</span>
-        </div>
+        <Skeleton cantidad={4} className="games-loading" variante="tarjeta" />
       )}
 
-      {!loading && error && <AlertMessage variant="error">{error}</AlertMessage>}
+      {!loading && error && (
+        <AlertMessage variant="error">
+          <p>{error}</p>
+          <div className="ui-alert__actions">
+            <Boton onClick={() => setReintento((count) => count + 1)}>
+              Reintentar
+            </Boton>
+          </div>
+        </AlertMessage>
+      )}
 
       {!loading && !error && videojuegos.length === 0 && (
         <AlertMessage variant="empty">
-          {filtrosActivos
-            ? 'No hay videojuegos que coincidan con los filtros seleccionados.'
-            : 'Aún no hay videojuegos registrados.'}
+          <p>
+            {filtrosActivos
+              ? 'Ningún juego coincide con los filtros.'
+              : 'Aún no tienes videojuegos. Registra tu primer juego.'}
+          </p>
+          <div className="ui-alert__actions">
+            {filtrosActivos ? (
+              <Boton
+                onClick={() => {
+                  setPlataforma('');
+                  setGenero('');
+                  setEstado('');
+                }}
+              >
+                Limpiar filtros
+              </Boton>
+            ) : (
+              <Link className="ui-button ui-button--primary" to="/videojuegos/nuevo">
+                Nuevo videojuego
+              </Link>
+            )}
+          </div>
         </AlertMessage>
       )}
 

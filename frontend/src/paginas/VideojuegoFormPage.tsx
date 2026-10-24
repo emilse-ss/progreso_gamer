@@ -6,7 +6,9 @@ import {
   obtenerVideojuego,
 } from '../api/videojuegosApi';
 import { AlertMessage } from '../components/ui/AlertMessage';
+import { Boton } from '../components/ui/Boton';
 import { PageContainer } from '../components/ui/PageContainer';
+import { Skeleton } from '../components/ui/Skeleton';
 import type { Videojuego, VideojuegoInput } from '../types';
 import { VideojuegoForm } from './VideojuegoForm';
 
@@ -24,6 +26,7 @@ export function VideojuegoFormPage() {
   const [errorCarga, setErrorCarga] = useState<string | null>(null);
   const [errorServidor, setErrorServidor] = useState<string | null>(null);
   const [guardando, setGuardando] = useState(false);
+  const [reintento, setReintento] = useState(0);
 
   useEffect(() => {
     if (!id) {
@@ -60,7 +63,7 @@ export function VideojuegoFormPage() {
     return () => {
       cancelled = true;
     };
-  }, [id]);
+  }, [id, reintento]);
 
   async function handleSubmit(values: VideojuegoInput): Promise<void> {
     setGuardando(true);
@@ -84,14 +87,18 @@ export function VideojuegoFormPage() {
   return (
     <PageContainer title={title}>
       {cargando && (
-        <div className="d-flex align-items-center gap-2" role="status">
-          <span className="spinner-border spinner-border-sm" aria-hidden="true" />
-          <span>Cargando videojuego...</span>
-        </div>
+        <Skeleton cantidad={4} variante="formulario" />
       )}
       {!cargando && errorCarga && (
         <>
-          <AlertMessage variant="error">{errorCarga}</AlertMessage>
+          <AlertMessage variant="error">
+            <p>{errorCarga}</p>
+            <div className="ui-alert__actions">
+              <Boton onClick={() => setReintento((count) => count + 1)}>
+                Reintentar
+              </Boton>
+            </div>
+          </AlertMessage>
           <Link className="btn btn-outline-secondary" to="/videojuegos">
             Volver a videojuegos
           </Link>
