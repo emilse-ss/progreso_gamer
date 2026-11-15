@@ -63,10 +63,10 @@ DADO que «Hades» no tiene meta,
 CUANDO la jugadora intenta crear una meta con 6 hitos, o con dos hitos de 50 %, o con un hito de 33.3 %, o con un hito de 0 % o de 101 %,
 ENTONCES la meta no se crea y un mensaje explica la causa.
 
-**CA-01.5 · Meta sin hitos y hito sin descripción** (R-16)
+**CA-01.5 · Meta sin hitos** (R-16)
 DADO que «Hades» no tiene meta,
-CUANDO la jugadora crea una meta de 5 h y 3 días sin hitos, o con un único hito de 75 % sin descripción,
-ENTONCES la meta se crea en los dos casos.
+CUANDO la jugadora crea una meta de 5 h y 3 días sin hitos,
+ENTONCES la meta se crea con la lista de hitos vacía.
 
 **CA-01.6 · Segunda meta activa** (R-13)
 DADO que «Hades» tiene una meta activa de 5 h y 3 días desde el lunes 9,
@@ -77,6 +77,13 @@ ENTONCES la segunda meta no se crea, un mensaje indica que el juego ya tiene una
 DADO que «Hades» pasó a «abandonado» el miércoles 11 y «Celeste» está «completado»,
 CUANDO el lunes 16 la jugadora intenta crear una meta para cualquiera de los dos,
 ENTONCES la meta no se crea y un mensaje explica que el juego está abandonado o completado.
+
+**CA-01.8 · Descripción del hito obligatoria** (R-16, S-06)
+DADO que «Hades» no tiene meta,
+CUANDO el lunes 9 la jugadora intenta crear una meta de 5 h y 3 días con un hito de 75 % y descripción: (a) vacía, (b) formada solo por espacios o (c) de 101 caracteres,
+ENTONCES la meta no se crea y un mensaje indica que la descripción del hito es obligatoria y tiene como máximo 100 caracteres.
+Y CUANDO la crea con la descripción « Mitad » o con una de exactamente 100 caracteres,
+ENTONCES la meta se crea y el hito se guarda como «Mitad» (sin los espacios) o con sus 100 caracteres.
 
 ### HU-02 · Editar la meta activa
 
@@ -402,7 +409,7 @@ La DoD de cada ticket añade lo específico.
 | T-05 | dominio  | Hitos ordenados y estado «alcanzado» a partir del avance actual (R-16, R-17)                                                                                                                   | HU-06                              | T-01                   | Tests de CA-06.1 a CA-06.4                                                                                                            |
 | T-21 | dominio  | Semana cumplida: horas al 100 % y días objetivo (R-09)                                                                                                                                         | HU-13                              | T-03                   | Tests de CA-13.1 a CA-13.5                                                                                                            |
 | T-06 | dominio  | Armar el progreso semanal completo, con los casos sin meta y sin partidas (R-11)                                                                                                               | HU-04 a HU-07, HU-13               | T-03, T-04, T-05, T-21 | Tests de CA-07.1 a CA-07.3 sobre la función que arma el resultado                                                                     |
-| T-07 | backend  | Modelo Meta: horas y días enteros dentro de rango (R-12), hitos de 0 a 5, enteros y sin objetivos repetidos (R-16), y una sola meta activa garantizada también en la base de datos (R-13)      | HU-01, HU-02                       | T-01                   | Tests de validación del esquema para CA-01.2 y CA-01.4                                                                                |
+| T-07 | backend  | Modelo Meta: horas y días enteros dentro de rango (R-12), hitos de 0 a 5, enteros y sin objetivos repetidos (R-16), y una sola meta activa garantizada también en la base de datos (R-13)      | HU-01, HU-02                       | T-01                   | Tests de validación del esquema para CA-01.2, CA-01.4 y CA-01.8                                                                       |
 | T-08 | backend  | Manejo centralizado de errores: conflicto (409), incluido el de clave duplicada (D-05); los demás casos siguen respondiendo 400, 404 y 500                                                     | HU-01, HU-03                       | T-01                   | Test del caso de clave duplicada; tabla de errores del README actualizada                                                             |
 | T-09 | backend  | Servicio y rutas de Meta: crear, consultar, listar por juego (activa e inactivas), editar la activa, desactivar y reactivar (R-13 a R-15, R-19), con validadores en las actualizaciones (D-08) | HU-01 a HU-03                      | T-07, T-08             | Criterios CA-01.1, CA-01.6, CA-01.7, CA-02.1 a CA-02.3, CA-02.5 y CA-03.1 a CA-03.6 verificados según la spec                         |
 | T-10 | backend  | Progreso semanal de un videojuego: el servicio consulta las partidas, la meta y el avance, y llama al dominio; id inválido o juego inexistente (R-01 a R-11, R-23)                             | HU-04 a HU-07, HU-13               | T-06, T-09             | Respuesta igual al contrato de la spec; casos de id inválido e inexistente                                                            |
@@ -411,7 +418,7 @@ La DoD de cada ticket añade lo específico.
 | T-13 | docs     | Pruebas manuales con curl o Thunder Client sobre la API: sin partidas, ≥ 5 partidas con una racha rota, 400, 404 y 409; tabla de resultados con evidencia                                      | HU-01, HU-04 a HU-07, HU-10, HU-13 | T-10, T-11, T-12       | Tabla con petición, resultado esperado y resultado obtenido en la documentación                                                       |
 | T-14 | frontend | Servicio de metas en la capa de API del frontend y tipos del progreso                                                                                                                          | HU-01 a HU-07, HU-13               | T-10                   | Las páginas no llaman directamente a la red; build sin errores                                                                        |
 | T-15 | frontend | Sección de progreso en el detalle: barra de horas, días, meta cumplida, racha, mejor racha e hitos; estados de carga, error, vacío y sin meta (con invitación)                                 | HU-04 a HU-07, HU-13               | T-14                   | Revisión con DESIGN.md sin desviaciones; CA-07.x y CA-13.x comprobados en la interfaz                                                 |
-| T-16 | frontend | Formulario de meta para crear y editar, con sus hitos                                                                                                                                          | HU-01, HU-02                       | T-14                   | Muestra los mensajes de error de CA-01.2, CA-01.4, CA-01.6, CA-01.7 y CA-02.5                                                         |
+| T-16 | frontend | Formulario de meta para crear y editar, con sus hitos                                                                                                                                          | HU-01, HU-02                       | T-14                   | Muestra los mensajes de error de CA-01.2, CA-01.4, CA-01.8, CA-01.6, CA-01.7 y CA-02.5                                                |
 | T-17 | frontend | Desactivar con confirmación, lista de metas inactivas y reactivar desde ella                                                                                                                   | HU-03                              | T-15                   | Comprobados CA-03.1 a CA-03.6 en la interfaz                                                                                          |
 | T-18 | frontend | Refrescar el progreso al registrar o eliminar una partida (D-14) y mostrar las fechas en hora de Ecuador (D-02)                                                                                | HU-08                              | T-15                   | Comprobados CA-08.1 y CA-08.2                                                                                                         |
 | T-19 | deuda    | **D-03:** el avance es obligatorio en las partidas nuevas y el resumen toma la partida más reciente que tenga avance (R-18)                                                                    | HU-12, HU-06                       | T-01                   | Tests de CA-12.1 a CA-12.3; formulario y README actualizados                                                                          |
@@ -423,32 +430,32 @@ La DoD de cada ticket añade lo específico.
 
 ## 4. Trazabilidad
 
-| Regla          | Historia            | Criterios                                   | Tickets          |
-| -------------- | ------------------- | ------------------------------------------- | ---------------- |
-| R-01           | HU-04, HU-05        | CA-04.1                                     | T-02, T-10       |
-| R-02           | HU-04, HU-05        | CA-04.2, CA-05.4                            | T-02             |
-| R-03           | HU-04, HU-05        | CA-04.3, CA-05.6                            | T-03, T-04       |
-| R-04           | HU-05               | CA-05.1, CA-05.6                            | T-04             |
-| R-05           | HU-05               | CA-05.2, CA-05.3, CA-05.4                   | T-04             |
-| R-06           | HU-05               | CA-05.3, CA-05.5                            | T-04             |
-| R-07           | HU-04               | CA-04.3, CA-04.4                            | T-03             |
-| R-08           | HU-04, HU-13        | CA-04.4, CA-04.5, CA-04.6, CA-13.4          | T-03             |
-| R-09           | HU-13               | CA-13.1 a CA-13.5                           | T-21, T-15       |
-| R-10           | HU-04, HU-02        | CA-04.7, CA-02.4                            | T-03, T-10       |
-| R-11           | HU-07               | CA-07.1, CA-07.2, CA-07.3, CA-13.5          | T-06, T-15       |
-| R-12           | HU-01, HU-02        | CA-01.1, CA-01.2, CA-02.5                   | T-07, T-09, T-16 |
-| R-13           | HU-01, HU-03        | CA-01.6, CA-03.5                            | T-07, T-08, T-09 |
-| R-14           | HU-02               | CA-02.1, CA-02.2, CA-02.3                   | T-09, T-16       |
-| R-15           | HU-03, HU-09        | CA-03.1 a CA-03.5, CA-09.4                  | T-09, T-17       |
-| R-16           | HU-01, HU-02, HU-06 | CA-01.3, CA-01.4, CA-01.5, CA-02.5, CA-06.4 | T-05, T-07, T-16 |
-| R-17           | HU-06               | CA-06.1, CA-06.2, CA-06.3                   | T-05, T-15       |
-| R-18           | HU-12, HU-06        | CA-12.1, CA-12.2, CA-12.3                   | T-19             |
-| R-19           | HU-01, HU-03        | CA-01.7, CA-03.6                            | T-09             |
-| R-20           | HU-09               | CA-09.1 a CA-09.4                           | T-12             |
-| R-21           | HU-10               | CA-10.1, CA-10.2                            | T-11             |
-| R-22           | HU-11               | CA-11.1 a CA-11.5                           | T-20             |
-| R-23           | HU-04, HU-05        | CA-04.8, CA-04.9, CA-05.7                   | T-02             |
-| Enunciado §7.4 | HU-08               | CA-08.1, CA-08.2                            | T-18             |
+| Regla          | Historia            | Criterios                                            | Tickets          |
+| -------------- | ------------------- | ---------------------------------------------------- | ---------------- |
+| R-01           | HU-04, HU-05        | CA-04.1                                              | T-02, T-10       |
+| R-02           | HU-04, HU-05        | CA-04.2, CA-05.4                                     | T-02             |
+| R-03           | HU-04, HU-05        | CA-04.3, CA-05.6                                     | T-03, T-04       |
+| R-04           | HU-05               | CA-05.1, CA-05.6                                     | T-04             |
+| R-05           | HU-05               | CA-05.2, CA-05.3, CA-05.4                            | T-04             |
+| R-06           | HU-05               | CA-05.3, CA-05.5                                     | T-04             |
+| R-07           | HU-04               | CA-04.3, CA-04.4                                     | T-03             |
+| R-08           | HU-04, HU-13        | CA-04.4, CA-04.5, CA-04.6, CA-13.4                   | T-03             |
+| R-09           | HU-13               | CA-13.1 a CA-13.5                                    | T-21, T-15       |
+| R-10           | HU-04, HU-02        | CA-04.7, CA-02.4                                     | T-03, T-10       |
+| R-11           | HU-07               | CA-07.1, CA-07.2, CA-07.3, CA-13.5                   | T-06, T-15       |
+| R-12           | HU-01, HU-02        | CA-01.1, CA-01.2, CA-02.5                            | T-07, T-09, T-16 |
+| R-13           | HU-01, HU-03        | CA-01.6, CA-03.5                                     | T-07, T-08, T-09 |
+| R-14           | HU-02               | CA-02.1, CA-02.2, CA-02.3                            | T-09, T-16       |
+| R-15           | HU-03, HU-09        | CA-03.1 a CA-03.5, CA-09.4                           | T-09, T-17       |
+| R-16           | HU-01, HU-02, HU-06 | CA-01.3, CA-01.4, CA-01.5, CA-01.8, CA-02.5, CA-06.4 | T-05, T-07, T-16 |
+| R-17           | HU-06               | CA-06.1, CA-06.2, CA-06.3                            | T-05, T-15       |
+| R-18           | HU-12, HU-06        | CA-12.1, CA-12.2, CA-12.3                            | T-19             |
+| R-19           | HU-01, HU-03        | CA-01.7, CA-03.6                                     | T-09             |
+| R-20           | HU-09               | CA-09.1 a CA-09.4                                    | T-12             |
+| R-21           | HU-10               | CA-10.1, CA-10.2                                     | T-11             |
+| R-22           | HU-11               | CA-11.1 a CA-11.5                                    | T-20             |
+| R-23           | HU-04, HU-05        | CA-04.8, CA-04.9, CA-05.7                            | T-02             |
+| Enunciado §7.4 | HU-08               | CA-08.1, CA-08.2                                     | T-18             |
 
 ---
 
@@ -462,15 +469,16 @@ La DoD de cada ticket añade lo específico.
 | D-10     | Se rechazan las partidas de días posteriores a hoy y las duraciones fuera de 5 a 1440 min (R-22)                                       | T-20             | CA-11.1, CA-11.2, CA-11.4 |
 | D-02     | El día se calcula en hora de Ecuador (T-02), se rechazan las fechas sin hora (T-20) y las fechas se muestran en hora de Ecuador (T-18) | T-02, T-20, T-18 | CA-04.2, CA-04.3, CA-11.3 |
 
-**Bloqueantes resueltos dentro de E2** (no cuentan como deuda pagada): D-01 (T-01), D-05 (T-08), D-06a (T-11), D-09 (T-12, T-09), D-14 (T-18) y D-08, que es una regla DEBE de la spec, aplicada en T-09.
+**Bloqueantes resueltos dentro de E2** (no cuentan como deuda pagada): D-01 (T-01), D-05 en su parte del 409 (T-08; los mensajes en bruto se difieren), D-06a (T-11), D-09 (T-12, T-09), D-14 (T-18) y D-08, que es una regla DEBE de la spec, aplicada en T-09.
 
 ### Se difieren
 
-| Problema                                                      | Motivo                                                                                                                |
-| ------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| D-04 · Editar partidas                                        | Es grande (backend e interfaz) y no bloquea la épica: para corregir, se elimina y se registra de nuevo (PRD P-01)     |
-| D-06b · Eliminación sin transacción                           | El riesgo es bajo; las transacciones exigen un _replica set_ y complican el despliegue (PRD P-02)                     |
-| D-07 · Validaciones repartidas en capas                       | No es un defecto: se fija la convención en `AGENTS.md` y en la spec, sin reescribir lo que ya existe                  |
-| D-11 · Falta un índice por videojuego y fecha en las partidas | Con el volumen de uso personal (PRD S-05) no afecta al rendimiento                                                    |
-| D-12 · Detalles del README                                    | Es documentación final: se corrige en la fase 9                                                                       |
-| D-13 · Bootstrap global                                       | Ya está decidido en `DESIGN.md` (base CSS con límites); las desviaciones existentes se corrigen al tocar cada archivo |
+| Problema                                                      | Motivo                                                                                                                                                                                                                                                               |
+| ------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D-04 · Editar partidas                                        | Es grande (backend e interfaz) y no bloquea la épica: para corregir, se elimina y se registra de nuevo (PRD P-01). Al implementarla habrá que resolver PRD S-07: las partidas antiguas sin avance no podrán volver a guardarse                                       |
+| D-05 (parcial) · Mensajes de validación del esquema en bruto  | T-08 resuelve el 409 de D-05, pero los mensajes de validación siguen saliendo con el prefijo técnico («Meta validation failed: …»). Aun así incluyen el campo y la regla, así que los criterios se cumplen; limpiarlos cambiaría los mensajes de E1 y no aporta a E2 |
+| D-06b · Eliminación sin transacción                           | El riesgo es bajo; las transacciones exigen un _replica set_ y complican el despliegue (PRD P-02)                                                                                                                                                                    |
+| D-07 · Validaciones repartidas en capas                       | No es un defecto: se fija la convención en `AGENTS.md` y en la spec, sin reescribir lo que ya existe                                                                                                                                                                 |
+| D-11 · Falta un índice por videojuego y fecha en las partidas | Con el volumen de uso personal (PRD S-05) no afecta al rendimiento                                                                                                                                                                                                   |
+| D-12 · Detalles del README                                    | Es documentación final: se corrige en la fase 9                                                                                                                                                                                                                      |
+| D-13 · Bootstrap global                                       | Ya está decidido en `DESIGN.md` (base CSS con límites); las desviaciones existentes se corrigen al tocar cada archivo                                                                                                                                                |
