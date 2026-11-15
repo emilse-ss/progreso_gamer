@@ -149,7 +149,10 @@ export function SeccionProgreso({
         <AlertMessage variant="error">
           <p>No se pudo cargar el progreso de la semana. {error}</p>
           <div className="ui-alert__actions">
-            <Boton onClick={() => setReintento((count) => count + 1)}>
+            <Boton
+              onClick={() => setReintento((count) => count + 1)}
+              variante="neutro"
+            >
               Reintentar
             </Boton>
           </div>
@@ -171,8 +174,9 @@ export function SeccionProgreso({
                   tu semana.
                 </p>
                 <div className="ui-alert__actions">
+                  {/* Secundario: el primario del detalle es «Registrar partida» (un solo primario por vista). */}
                   <Link
-                    className="ui-button ui-button--primary"
+                    className="ui-button ui-button--secondary"
                     to={`/videojuegos/${encodeURIComponent(videojuegoId)}/meta/nueva`}
                   >
                     Crear meta
