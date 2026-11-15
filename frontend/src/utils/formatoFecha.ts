@@ -33,6 +33,27 @@ export function formatearFechaCorta(instante: string): string {
     : formatoFechaCorta.format(fecha);
 }
 
+const formatoFechaHora = new Intl.DateTimeFormat('es-EC', {
+  timeZone: ZONA_HORARIA,
+  dateStyle: 'medium',
+  timeStyle: 'short',
+});
+
+/**
+ * Fecha y hora de un instante ISO en hora de Ecuador, sea cual sea la zona del navegador.
+ * Sustituye a los formatDate de las páginas, que usaban la zona del navegador (D-02).
+ */
+export function formatearFechaHora(
+  instante: string | null,
+  sinValor = 'Sin partidas registradas',
+): string {
+  if (!instante) return sinValor;
+  const fecha = new Date(instante);
+  return Number.isNaN(fecha.getTime())
+    ? 'Fecha no disponible'
+    : formatoFechaHora.format(fecha);
+}
+
 /** «9 nov al 15 nov» para la semana del progreso. */
 export function formatearRangoSemana(inicio: string, fin: string): string {
   return `${formatearDia(inicio)} al ${formatearDia(fin)}`;

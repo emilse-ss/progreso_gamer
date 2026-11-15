@@ -9,6 +9,7 @@ import { ModalConfirmacion } from '../components/ui/ModalConfirmacion';
 import { PageContainer } from '../components/ui/PageContainer';
 import { Skeleton } from '../components/ui/Skeleton';
 import type { PartidaListado } from '../types';
+import { formatearFechaHora } from '../utils/formatoFecha';
 
 export function ListaPartidasPage() {
   const [partidas, setPartidas] = useState<PartidaListado[]>([]);
@@ -117,7 +118,7 @@ export function ListaPartidasPage() {
                 <>
                   <span>
                     <IconoCalendario aria-hidden="true" />
-                    {formatDate(partida.fecha)}
+                    {formatearFechaHora(partida.fecha)}
                   </span>
                   <span>
                     <IconoReloj aria-hidden="true" />
@@ -157,19 +158,10 @@ export function ListaPartidasPage() {
           <>
             ¿Eliminar la partida de{' '}
             <strong>{partidaPendienteEliminar.videojuego.nombre}</strong> del{' '}
-            {formatDate(partidaPendienteEliminar.fecha)}?
+            {formatearFechaHora(partidaPendienteEliminar.fecha)}?
           </>
         )}
       </ModalConfirmacion>
     </PageContainer>
   );
-}
-
-function formatDate(value: string): string {
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) return 'Fecha no disponible';
-  return new Intl.DateTimeFormat('es-EC', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(date);
 }
