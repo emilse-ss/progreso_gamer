@@ -108,7 +108,7 @@ Estas tareas surgieron durante el diagnóstico, pero no forman parte de su tabla
 | 1. Diagnóstico | ☐ En curso (falta completar decisiones) |
 | 2. Harness | ☑ (`.env.example` sin cambios: diferido) |
 | 3. PRD y épicas | ☑ |
-| 4. Backlog | ☐ |
+| 4. Backlog | ☑ |
 | 5. Specs | ☐ |
 | 6. Backend | ☐ |
 | 7. Frontend | ☐ |
