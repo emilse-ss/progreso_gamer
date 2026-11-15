@@ -20,6 +20,12 @@ function isJsonParseError(error: unknown): error is JsonParseError {
   );
 }
 
+// Error de clave duplicada de MongoDB (E11000): una condición de carrera que la
+// validación del servicio no alcanzó a detectar (D-05).
+function isDuplicateKeyError(error: unknown): boolean {
+  return typeof error === "object" && error !== null && "code" in error && error.code === 11000;
+}
+
 const errorHandler: ErrorRequestHandler = (error: unknown, _request, response, next) => {
   if (response.headersSent) {
     next(error);
@@ -48,6 +54,14 @@ const errorHandler: ErrorRequestHandler = (error: unknown, _request, response, n
 
   if (error instanceof ApiError) {
     response.status(error.status).json({ error: error.message, requestId });
+    return;
+  }
+
+  if (isDuplicateKeyError(error)) {
+    response.status(409).json({
+      error: "Ya existe un registro con esos datos",
+      requestId
+    });
     return;
   }
 

@@ -165,6 +165,7 @@ Ejemplo de respuesta (más `requestId` en el nivel superior):
 | Validación de esquema | `ValidationError` o validación de entrada; JSON mal formado | 400 | `{ "error", "requestId" }` |
 | Id mal formado | `CastError` o validación previa | 400 | `{ "error", "requestId" }` |
 | Recurso o referencia inexistente | `ApiError` con estado 404 | 404 | `{ "error", "requestId" }` |
+| Conflicto con el estado actual | `ApiError` con estado 409 (por ejemplo, segunda meta activa) o error de clave duplicada de MongoDB (E11000) | 409 | `{ "error", "requestId" }` |
 | Error inesperado | Cualquier otro; se registra en el servidor sin exponer detalles | 500 | `{ "error": "Error interno del servidor", "requestId" }` |
 
 ---
