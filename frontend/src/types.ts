@@ -98,3 +98,65 @@ export interface PartidaResponse {
 export interface VideojuegoResumenResponse extends VideojuegoResumen {
   requestId: string;
 }
+
+// E2 · Metas y progreso semanal (spec frontend §3.1).
+
+export interface Hito {
+  descripcion: string;
+  porcentajeObjetivo: number;
+}
+
+export interface HitoProgreso extends Hito {
+  alcanzado: boolean;
+}
+
+export interface Meta {
+  _id: string;
+  videojuego: string;
+  horasSemanales: number;
+  diasPorSemana: number;
+  activa: boolean;
+  /** Ya vienen ordenados de menor a mayor objetivo. */
+  hitos: Hito[];
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface MetaInput {
+  videojuego: string;
+  horasSemanales: number;
+  diasPorSemana: number;
+  hitos: Hito[];
+}
+
+export type MetaUpdateInput = Partial<
+  Pick<MetaInput, 'horasSemanales' | 'diasPorSemana' | 'hitos'>
+>;
+
+export interface MetaResponse {
+  meta: Meta;
+  requestId: string;
+}
+
+export interface MetasListResponse {
+  total: number;
+  metas: Meta[];
+  requestId: string;
+}
+
+export interface ProgresoSemanal {
+  /** Días "YYYY-MM-DD" en hora de Ecuador. */
+  semana: { inicio: string; fin: string };
+  meta: { horasSemanales: number; diasPorSemana: number } | null;
+  horasSemana: number;
+  porcentajeHoras: number | null;
+  diasJugadosSemana: number;
+  rachaActual: number;
+  mejorRacha: number;
+  hitos: HitoProgreso[];
+  metaCumplida: boolean | null;
+}
+
+export interface ProgresoSemanalResponse extends ProgresoSemanal {
+  requestId: string;
+}
