@@ -114,8 +114,8 @@ _Ejemplo:_ el jueves 12, la meta activa de «Hades» pasa de 3 a 5 días. Una me
 **R-15 · Desactivar, reactivar y conservar.** Una meta se puede desactivar y volver a activar, pero no se borra. Las metas inactivas forman el historial del juego: la persona ve la lista de metas inactivas de cada juego y puede reactivar cualquiera de ellas. La reactivación respeta R-13 y R-19.
 _Ejemplo:_ la meta A se desactiva el lunes 9 y se crea la B. El viernes 13, reactivar A se rechaza porque B está activa; si antes se desactiva B, A puede reactivarse.
 
-**R-16 · Hitos.** Una meta tiene entre 0 y 5 hitos. Cada hito tiene un objetivo entero de 1 a 100 % y una descripción opcional. No puede haber dos hitos con el mismo objetivo en una meta, y se muestran ordenados de menor a mayor objetivo.
-_Ejemplo:_ los hitos «50 %, 25 %, 100 %» se muestran como 25 %, 50 % y 100 %. «50 % Mitad» junto con «50 % Mitad otra vez» se rechaza, igual que un hito de «33.3 %». Una meta sin hitos es válida.
+**R-16 · Hitos.** Una meta tiene entre 0 y 5 hitos. Cada hito tiene un objetivo entero de 1 a 100 % y una descripción **obligatoria** de 1 a 100 caracteres, sin contar los espacios al inicio y al final, que se descartan (S-06). No puede haber dos hitos con el mismo objetivo en una meta, y se muestran ordenados de menor a mayor objetivo.
+_Ejemplo:_ los hitos «50 %, 25 %, 100 %» se muestran como 25 %, 50 % y 100 %. «50 % Mitad» junto con «50 % Mitad otra vez» se rechaza, igual que un hito de «33.3 %», un hito sin descripción, uno cuya descripción solo tiene espacios o uno con una descripción de 101 caracteres. « Mitad » se guarda como «Mitad». Una meta sin hitos es válida.
 
 **R-17 · Hito alcanzado.** Un hito está alcanzado **mientras** el avance actual sea mayor o igual que su objetivo; si el avance baja, deja de estarlo.
 _Ejemplo:_ hitos de 25 % y 50 %. El lunes 9 se registra una partida con avance 55: los dos están alcanzados. El miércoles 11 se registra otra con avance 40: el de 25 % sigue alcanzado y el de 50 % ya no.
@@ -144,27 +144,27 @@ _Ejemplo:_ si existe una partida antigua con fecha del martes 17, el domingo 15 
 
 ## 8. Cobertura de los huecos
 
-| Hueco                                        | Decisión                                                                     | Regla      |
-| -------------------------------------------- | ---------------------------------------------------------------------------- | ---------- |
-| 1. Racha y día de hoy                        | La racha sigue viva hasta que termine el día                                 | R-05       |
-| 2. Varias partidas el mismo día              | Cuentan un día y las horas se suman                                          | R-03       |
-| 3. Partida que cruza la medianoche           | Pertenece entera al día de inicio                                            | R-02       |
-| 4. Cambio de meta a mitad de semana          | Se usa la meta activa al consultar, para toda la semana                      | R-10, R-14 |
-| 5. Meta superada                             | Tope en 100 %                                                                | R-08       |
-| 6. Hito ya alcanzado                         | Se recalcula: puede dejar de estar alcanzado                                 | R-17, R-18 |
-| 7. Videojuego completado o abandonado        | No puede tener meta activa                                                   | R-19       |
-| 8. Eliminar un videojuego con meta           | Se eliminan todas sus metas e hitos                                          | R-21       |
-| A. Cómo se mide el éxito                     | Métrica de producto, medida fuera de la aplicación                           | §3         |
-| B. Qué es cumplir la meta                    | Horas y días                                                                 | R-09       |
-| C. Desactivar o crear meta nueva             | Se conserva el historial; se reactiva; no se borra                           | R-13, R-15 |
-| D. Editar una meta                           | Solo la activa; el videojuego no cambia                                      | R-14       |
-| E. Hitos repetidos o desordenados            | Se rechazan los repetidos; se ordenan; descripción opcional; 0 hitos válidos | R-16       |
-| F. Fechas futuras y duraciones extremas      | No posterior a hoy; con hora; de 5 a 1440 min                                | R-22       |
-| G. El juego cambia de estado con meta activa | La meta se desactiva sola                                                    | R-20       |
-| H. Racha con avance cero o faltante          | El avance no influye; avance actual = último con avance                      | R-04, R-18 |
-| I. Redondeo del porcentaje                   | Sobre las horas ya redondeadas                                               | R-08       |
-| J. Semana en que se crea la meta             | Cuentan las partidas anteriores a la creación                                | R-10       |
-| K. Partidas posteriores a hoy ya guardadas   | Se ignoran                                                                   | R-23       |
+| Hueco                                        | Decisión                                                                               | Regla      |
+| -------------------------------------------- | -------------------------------------------------------------------------------------- | ---------- |
+| 1. Racha y día de hoy                        | La racha sigue viva hasta que termine el día                                           | R-05       |
+| 2. Varias partidas el mismo día              | Cuentan un día y las horas se suman                                                    | R-03       |
+| 3. Partida que cruza la medianoche           | Pertenece entera al día de inicio                                                      | R-02       |
+| 4. Cambio de meta a mitad de semana          | Se usa la meta activa al consultar, para toda la semana                                | R-10, R-14 |
+| 5. Meta superada                             | Tope en 100 %                                                                          | R-08       |
+| 6. Hito ya alcanzado                         | Se recalcula: puede dejar de estar alcanzado                                           | R-17, R-18 |
+| 7. Videojuego completado o abandonado        | No puede tener meta activa                                                             | R-19       |
+| 8. Eliminar un videojuego con meta           | Se eliminan todas sus metas e hitos                                                    | R-21       |
+| A. Cómo se mide el éxito                     | Métrica de producto, medida fuera de la aplicación                                     | §3         |
+| B. Qué es cumplir la meta                    | Horas y días                                                                           | R-09       |
+| C. Desactivar o crear meta nueva             | Se conserva el historial; se reactiva; no se borra                                     | R-13, R-15 |
+| D. Editar una meta                           | Solo la activa; el videojuego no cambia                                                | R-14       |
+| E. Hitos repetidos o desordenados            | Se rechazan los repetidos; se ordenan; descripción obligatoria (S-06); 0 hitos válidos | R-16       |
+| F. Fechas futuras y duraciones extremas      | No posterior a hoy; con hora; de 5 a 1440 min                                          | R-22       |
+| G. El juego cambia de estado con meta activa | La meta se desactiva sola                                                              | R-20       |
+| H. Racha con avance cero o faltante          | El avance no influye; avance actual = último con avance                                | R-04, R-18 |
+| I. Redondeo del porcentaje                   | Sobre las horas ya redondeadas                                                         | R-08       |
+| J. Semana en que se crea la meta             | Cuentan las partidas anteriores a la creación                                          | R-10       |
+| K. Partidas posteriores a hoy ya guardadas   | Se ignoran                                                                             | R-23       |
 
 ## 9. Supuestos
 
@@ -173,9 +173,11 @@ _Ejemplo:_ si existe una partida antigua con fecha del martes 17, el domingo 15 
 - **S-03:** al editar la meta activa se modifica esa misma meta; no se crea una nueva en el historial.
 - **S-04:** el «hoy» de todas las reglas es el día actual en hora de Ecuador, independientemente de dónde esté la persona.
 - **S-05:** el volumen de partidas de un videojuego es pequeño (uso personal), así que la racha puede recalcularse sobre todo el historial en cada consulta.
+- **S-06:** la descripción de un hito es obligatoria y tiene como máximo 100 caracteres (R-16). No viene de la ficha: es una decisión de la estudiante, tomada en la fase 5 para que cada hito se pueda leer en la interfaz. Sustituye la decisión inicial de H-E (descripción opcional).
+- **S-07:** como ahora el avance es obligatorio (R-18), una partida antigua sin avance no podría volver a guardarse si se editara. No hay impacto mientras no exista la edición de partidas. Queda ligado a P-01 y a la deuda D-04.
 
 ## 10. Puntos abiertos
 
 - **P-01 · Editar partidas:** diferido. Para corregir una fecha o un avance hay que eliminar la partida y registrarla de nuevo. El progreso se recalcula igualmente.
 - **P-02 · Eliminación no atómica:** si la eliminación de un videojuego falla a mitad del proceso, pueden quedar algunas metas o partidas sueltas. El riesgo es bajo y se acepta en esta épica.
-- **P-03 · Hito sin descripción:** el texto que muestra la interfaz cuando un hito no tiene descripción se decide en la spec del frontend.
+- **P-03 · Hito sin descripción:** ~~el texto que muestra la interfaz cuando un hito no tiene descripción se decide en la spec del frontend~~. **Cerrado:** la descripción pasa a ser obligatoria (R-16, S-06).
