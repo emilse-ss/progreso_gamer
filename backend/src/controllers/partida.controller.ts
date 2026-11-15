@@ -51,12 +51,16 @@ function parsePartidaInput(value: unknown): PartidaInput {
     throw new ApiError("duracionMinutos debe ser un número mayor que cero", 400);
   }
 
+  // El avance es obligatorio en las partidas nuevas (R-18, D-03).
+  if (value.porcentajeAvance === undefined) {
+    throw new ApiError("porcentajeAvance es obligatorio", 400);
+  }
+
   if (
-    value.porcentajeAvance !== undefined &&
-    (typeof value.porcentajeAvance !== "number" ||
-      !Number.isFinite(value.porcentajeAvance) ||
-      value.porcentajeAvance < 0 ||
-      value.porcentajeAvance > 100)
+    typeof value.porcentajeAvance !== "number" ||
+    !Number.isFinite(value.porcentajeAvance) ||
+    value.porcentajeAvance < 0 ||
+    value.porcentajeAvance > 100
   ) {
     throw new ApiError("porcentajeAvance debe ser un número entre 0 y 100", 400);
   }
@@ -69,9 +73,7 @@ function parsePartidaInput(value: unknown): PartidaInput {
     videojuego: value.videojuego,
     fecha: new Date(value.fecha),
     duracionMinutos: value.duracionMinutos,
-    ...(typeof value.porcentajeAvance === "number"
-      ? { porcentajeAvance: value.porcentajeAvance }
-      : {}),
+    porcentajeAvance: value.porcentajeAvance,
     ...(typeof value.notas === "string" ? { notas: value.notas } : {})
   };
 }

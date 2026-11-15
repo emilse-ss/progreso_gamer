@@ -79,7 +79,7 @@ Clasificación **propuesta**; la decisión final es de la estudiante.
 |---|---|---|
 | D-01 | **Bloquea.** Se resuelve en T-01 (Vitest) | Sin runner no hay tests de dominio ni regla de “tests antes de terminar”|
 | D-02 | **Bloquea.** El día se calcula en el dominio con Intl y America/Guayaquil; la interfaz muestra fechas en esa zona. Las fechas sin hora se rechazan (R-22, decidido en la fase 3) | Las rachas y la semana dependen del día correcto |
-| D-03 | **Bloquea y se paga como deuda (fase 8).** porcentajeAvance pasa a ser obligatorio también en la API, y el resumen ignora las partidas sin avance y toma la más reciente que lo tenga (R-18) | Es la causa de que los hitos “desaparezcan”. Requiere criterio, test y actualizar la fórmula del README |
+| D-03 | **Bloquea y se paga como deuda (fase 8).** porcentajeAvance pasa a ser obligatorio también en la API, y el resumen ignora las partidas sin avance y toma la más reciente que lo tenga (R-18). **Pagada en T-19** (15 nov 2026): test CA-12.2 en `Partida.model.test.ts`; CA-12.1 a CA-12.3 por curl en `docs/pruebas-api-E2.md` §5 | Es la causa de que los hitos “desaparezcan”. Requiere criterio, test y actualizar la fórmula del README |
 | D-04 | **Se difiere.**  | Es grande (backend y frontend) y no bloquea la épica. Se documenta que “editar” queda cubierto por borrar y recrear |
 | D-05 | **Bloquea.** Se resuelve en T-08: E11000 → 409 | SE2 exige 409 y la condición de carrera llegaría como 500 |
 | D-06a | **Bloquea.** Extender la cascada a Meta (activas e inactivas) | Es la decisión del hueco 8 |

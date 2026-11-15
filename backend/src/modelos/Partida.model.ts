@@ -4,7 +4,8 @@ export interface PartidaInput {
   videojuego: string;
   fecha: Date;
   duracionMinutos: number;
-  porcentajeAvance?: number;
+  /** Obligatorio en las partidas nuevas (R-18); el documento lo deja opcional por los datos antiguos. */
+  porcentajeAvance: number;
   notas?: string;
 }
 
@@ -36,6 +37,9 @@ const partidaSchema = new Schema<PartidaDocument>(
     },
     porcentajeAvance: {
       type: Number,
+      // Obligatorio en las partidas nuevas (R-18, D-03). Mongoose valida al guardar, así que
+      // las partidas antiguas sin avance se siguen leyendo.
+      required: [true, "El porcentaje de avance es obligatorio"],
       min: [0, "El porcentaje de avance no puede ser menor que cero"],
       max: [100, "El porcentaje de avance no puede ser mayor que 100"]
     },

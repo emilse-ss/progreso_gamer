@@ -141,9 +141,8 @@ export async function obtenerResumen(id: string): Promise<VideojuegoResumen> {
         totalPartidas: { $sum: 1 },
         minutosTotales: { $sum: "$duracionMinutos" },
         ultimaPartida: { $first: "$fecha" },
-        porcentajeAvanceActual: {
-          $first: { $ifNull: ["$porcentajeAvance", 0] }
-        }
+        // Avances en orden de fecha descendente; las partidas sin avance quedan como null.
+        avances: { $push: { $ifNull: ["$porcentajeAvance", null] } }
       }
     },
     {
@@ -154,7 +153,13 @@ export async function obtenerResumen(id: string): Promise<VideojuegoResumen> {
           $round: [{ $divide: ["$minutosTotales", 60] }, 1]
         },
         ultimaPartida: 1,
-        porcentajeAvanceActual: 1
+        // Avance de la partida más reciente que tenga avance; 0 si ninguna lo tiene (R-18, D-03).
+        porcentajeAvanceActual: {
+          $ifNull: [
+            { $first: { $filter: { input: "$avances", cond: { $ne: ["$$this", null] } } } },
+            0
+          ]
+        }
       }
     }
   ]);

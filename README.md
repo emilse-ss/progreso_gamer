@@ -68,7 +68,7 @@ Flujo de una petición: `ruta → middlewares → controlador → servicio → m
 | `videojuego` | ObjectId, `ref: "Videojuego"` | **Referenciado**; obligatorio y verificado en el servicio (404 si no existe) |
 | `fecha` | Date | Obligatoria |
 | `duracionMinutos` | number | Obligatoria y **mayor que cero** |
-| `porcentajeAvance` | number | Opcional en el backend, entre 0 y 100 |
+| `porcentajeAvance` | number | Obligatorio en las partidas nuevas (desde E2, D-03), entre 0 y 100. Las partidas antiguas sin avance se conservan |
 | `notas` | string | Opcional |
 | `createdAt`, `updatedAt` | Date | Timestamps automáticos |
 
@@ -84,7 +84,7 @@ Flujo de una petición: `ruta → middlewares → controlador → servicio → m
 | `nombre` obligatorio y con `trim` | Esquema y controlador | Sin nombre la ficha no es identificable; el `trim` evita nombres de solo espacios. |
 | `videojuego` obligatorio en Partida | Esquema y servicio | Una sesión huérfana no tiene sentido; el servicio comprueba que el juego exista porque `ref` por sí solo no lo garantiza. |
 | `duracionMinutos` > 0 | Esquema y controlador | Una sesión de 0 minutos no es una sesión y distorsiona `horasTotales`. |
-| `porcentajeAvance` entre 0 y 100 | Esquema y controlador | Es un porcentaje; fuera de ese rango rompería el "avance actual". |
+| `porcentajeAvance` obligatorio y entre 0 y 100 | Esquema y controlador | Es un porcentaje; fuera de ese rango rompería el "avance actual". Es obligatorio para que una sesión sin avance no borre el avance actual ni los hitos (R-18, D-03). |
 | `plataforma`, `genero`, `estado` con valores cerrados | `enum` | Evita variantes como "pc" o "PC " y hace fiables los filtros. |
 | Logros acotados a 50 y sin catálogos externos | Servicio | Es una lista corta que viaja con el juego; el usuario escribe sus propios logros. |
 | Ids validados antes de consultar | Controladores y errorHandler | Un id mal formado responde 400 en lugar de un error interno. |
@@ -99,7 +99,7 @@ Flujo de una petición: `ruta → middlewares → controlador → servicio → m
 | `totalPartidas` | Cantidad de partidas del videojuego |
 | `horasTotales` | `suma(duracionMinutos) / 60`, redondeada a 1 decimal |
 | `ultimaPartida` | `fecha` más reciente (se usa `fecha`, no `createdAt`, porque se pueden registrar sesiones de días anteriores) |
-| `porcentajeAvanceActual` | `porcentajeAvance` de esa partida más reciente |
+| `porcentajeAvanceActual` | `porcentajeAvance` de la partida más reciente **que tenga avance**; 0 si ninguna lo tiene (R-18) |
 
 Ejemplo de respuesta (más `requestId` en el nivel superior):
 
@@ -117,11 +117,16 @@ Ejemplo de respuesta (más `requestId` en el nivel superior):
 
 - **Sin partidas:** `totalPartidas: 0`, `horasTotales: 0`, `ultimaPartida: null`, `porcentajeAvanceActual: 0`.
 - **Videojuego inexistente:** 404.
-- **La partida más reciente no trae avance:** `porcentajeAvanceActual` es 0.
+- **La partida más reciente no trae avance** (solo puede ser una partida antigua): se ignora y se toma el avance de la anterior que sí lo tenga.
+- **Ninguna partida tiene avance:** `porcentajeAvanceActual` es 0.
 
 **El avance es acumulado.** `porcentajeAvance` es el punto en el que quedaste **al terminar esa sesión**, no lo que avanzaste en ella (sesión 1 → 30 %, sesión 2 → 45 %). Por eso el resumen toma el de la última partida en lugar de sumarlos. Lo único que se suma es la duración. El formulario de partida lo aclara con su etiqueta y texto de ayuda.
 
-**Decisión sobre el avance opcional:** _completa con la opción que elegiste (A: obligatorio en el formulario; B: el servicio usa el avance de la última partida que sí lo tenga; C: se deja como está) y su justificación._
+**Decisión sobre el avance opcional (E2, D-03):** se combinan A y B.
+- **A:** el avance es obligatorio en el formulario y también en la API.
+- **B:** el resumen usa el avance de la partida más reciente que sí lo tenga.
+
+Antes, una sola partida sin avance creada por la API ponía `porcentajeAvanceActual` en 0, y los hitos de la meta semanal dejaban de estar alcanzados. Lo obligatorio evita casos nuevos; lo de B protege los datos antiguos (R-18).
 
 ---
 

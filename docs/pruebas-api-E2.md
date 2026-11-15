@@ -112,15 +112,15 @@ Incluye la condición de carrera de R-13: dos creaciones simultáneas dan 201 y 
 
 ## 5. Criterios pendientes de la fase 8 (deuda técnica)
 
-Se registran para tener el **antes** de cada deuda. No son fallos de la fase 6: su ticket todavía no está implementado.
+Se registraron para tener el **antes** de cada deuda (no eran fallos de la fase 6). La columna «Después» se rellena al implementar cada ticket, con el curl ejecutado antes y después del código (`curl-t19.mjs`, `curl-t20.mjs`).
 
-| CA                | Caso                                                  | Esperado tras la deuda                            | Obtenido hoy (antes)                                                            | Ticket            |
-| ----------------- | ----------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------- | ----------------- |
-| CA-12.1           | Dataset D: avance 60 y después una partida sin avance | `porcentajeAvanceActual` 60; hito de 50 alcanzado | 0; hito de 50 **no** alcanzado                                                  | T-19 (D-03)       |
-| CA-12.2           | `POST /api/partidas` sin `porcentajeAvance`           | 400 «porcentajeAvance es obligatorio»             | 201                                                                             | T-19 (D-03)       |
-| CA-12.3           | Juego con solo partidas sin avance                    | 0                                                 | 0                                                                               | T-19 (D-03)       |
-| CA-11.2           | `POST /api/partidas` de un día posterior a hoy        | 400                                               | 201 (se aceptó la partida de H+2 del dataset B; el progreso la ignora por R-23) | T-20 (D-10)       |
-| CA-11.3 y CA-11.4 | Fecha sin hora; duración fuera de 5 a 1440 min        | 400                                               | Sin verificar todavía                                                           | T-20 (D-10, D-02) |
+| CA                | Caso                                                  | Esperado tras la deuda                            | Antes                                                                           | Después                                  | Ticket            |
+| ----------------- | ----------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------- | ----------------- |
+| CA-12.1           | Dataset D: avance 60 y después una partida sin avance | `porcentajeAvanceActual` 60; hito de 50 alcanzado | 0; hito de 50 **no** alcanzado                                                  | ✅ 60; hito de 50 `alcanzado: true`      | T-19 (D-03)       |
+| CA-12.2           | `POST /api/partidas` sin `porcentajeAvance`           | 400 «porcentajeAvance es obligatorio»             | 201                                                                             | ✅ 400 «porcentajeAvance es obligatorio» | T-19 (D-03)       |
+| CA-12.3           | Juego con solo partidas sin avance                    | 0                                                 | 0                                                                               | ✅ 0 (control: no cambia)                | T-19 (D-03)       |
+| CA-11.2           | `POST /api/partidas` de un día posterior a hoy        | 400                                               | 201 (se aceptó la partida de H+2 del dataset B; el progreso la ignora por R-23) | Pendiente de T-20                        | T-20 (D-10)       |
+| CA-11.3 y CA-11.4 | Fecha sin hora; duración fuera de 5 a 1440 min        | 400                                               | Sin verificar todavía                                                           | Pendiente de T-20                        | T-20 (D-10, D-02) |
 
 ## 6. Observaciones
 
