@@ -2,9 +2,10 @@
 
 > Momentos clave del trabajo con el agente (Claude Code): qué se pidió, qué hizo bien o mal y cómo se corrigió. Se escribe cuando ocurre el momento, no al final (`docs/PLAN-E2.md` §7, regla 7). El enunciado pide de 5 a 8 entradas, y al menos una debe ser una desviación de la spec detectada.
 
-| #   | Fase        | Tipo                            |
-| --- | ----------- | ------------------------------- |
-| 1   | 6 · Backend | Desviación de la spec detectada |
+| #   | Fase        | Tipo                                               |
+| --- | ----------- | -------------------------------------------------- |
+| 1   | 6 · Backend | Desviación de la spec detectada                    |
+| 2   | 8 · Deuda   | Error del agente detectado en la revisión del diff |
 
 ---
 
@@ -36,3 +37,28 @@
   - Registrar el momento en esta bitácora.
 - **Decisión de la estudiante:** solo registrarlo. Las desviaciones 4 a 6 no cambian el comportamiento observable. Las 1 a 3 quedan como riesgo conocido de los tests.
 - **Regla para las fases siguientes:** cada test debe verse fallar **en su aserción**, no solo por un import que falta, antes de escribir el código. En los tickets de API, la prueba con curl se ejecuta antes de implementar.
+
+---
+
+## 2. Un `$$this` que se convirtió en `$this`, y un test que no puede verse rojo
+
+- **Fecha:** 15 de noviembre de 2026
+- **Fase y tickets:** 8 · Deuda técnica, T-19 y T-20
+- **Tipo:** error del agente detectado en la revisión del diff
+
+**Qué se pidió.** Pagar D-03 (T-19) y D-10 con D-02 (T-20) siguiendo la regla de la fase 6: curl en rojo antes del código y cada test visto fallar en su aserción.
+
+**Qué hizo el agente.**
+
+- **Bien:** el ciclo se cumplió.
+  - El curl se ejecutó antes del código: CA-12.1 dio 0 y CA-12.2 dio 201; CA-11.2, CA-11.3 y CA-11.4 dieron 201.
+  - El test de CA-12.2 falló en `expected [] to include 'porcentajeAvance'`.
+  - Para T-20, el agente creó primero un _stub_ de `dominio/partida.ts` con las firmas y valores neutros. Así los cuatro tests de CA-11.2 a CA-11.4 fallaron en su aserción y no en el import.
+- **Mal:** el agente editó `videojuego.service.ts` con un script de `node` que usaba `String.replace`. En el texto de reemplazo, `$$` equivale a un solo `$`, así que la variable `"$$this"` del `$filter` quedó escrita como `"$this"`. Mongo habría leído `"$this"` como un campo llamado `this`, inexistente: el filtro habría descartado todos los avances y el resumen habría devuelto 0 siempre. Era justo el defecto que T-19 debía corregir. TypeScript y los tests unitarios no lo detectan, porque el aggregate no tiene test sin base de datos.
+- **Límite reconocido:** CA-11.5 («las partidas antiguas se conservan») ya tenía un test en verde (`progreso.test.ts`) y no puede verse rojo, porque protege un comportamiento que no cambia. Se verificó con datos reales: las partidas inválidas creadas en el rojo siguen guardadas y cuentan en el progreso.
+
+**Cómo se corrigió.**
+
+- El agente detectó el error al revisar el `git diff` antes de ejecutar nada, y lo corrigió con un reemplazo sin patrones (`split` y `join`).
+- El curl en verde de CA-12.1 (avance 60, hito de 50 alcanzado) confirma que el filtro funciona.
+- **Regla añadida:** en los scripts de edición, los reemplazos son literales (`split`/`join`) o usan una función. Nunca un texto de reemplazo con `$`.

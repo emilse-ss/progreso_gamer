@@ -1,5 +1,6 @@
 import { RequestHandler } from "express";
 import mongoose from "mongoose";
+import { fechaConHoraYZona } from "../dominio/partida";
 import { ApiError } from "../errors/ApiError";
 import { PartidaInput } from "../modelos/Partida.model";
 import {
@@ -39,16 +40,14 @@ function parsePartidaInput(value: unknown): PartidaInput {
     throw new ApiError("videojuego debe ser un ObjectId válido", 400);
   }
 
-  if (typeof value.fecha !== "string" || Number.isNaN(Date.parse(value.fecha))) {
-    throw new ApiError("fecha debe ser una fecha válida", 400);
+  // Forma de la fecha: ISO con hora y zona; sin hora caería en otro día en Ecuador (R-22, D-02).
+  if (typeof value.fecha !== "string" || !fechaConHoraYZona(value.fecha)) {
+    throw new ApiError("La fecha debe incluir la hora y la zona horaria", 400);
   }
 
-  if (
-    typeof value.duracionMinutos !== "number" ||
-    !Number.isFinite(value.duracionMinutos) ||
-    value.duracionMinutos <= 0
-  ) {
-    throw new ApiError("duracionMinutos debe ser un número mayor que cero", 400);
+  // Solo el tipo: el rango de 5 a 1440 min es una regla del servicio y del esquema (D-07).
+  if (typeof value.duracionMinutos !== "number" || !Number.isFinite(value.duracionMinutos)) {
+    throw new ApiError("duracionMinutos debe ser un número", 400);
   }
 
   // El avance es obligatorio en las partidas nuevas (R-18, D-03).

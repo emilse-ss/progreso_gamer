@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import { validarPartidaNueva } from "../dominio/partida";
 import { ApiError } from "../errors/ApiError";
 import Partida, { PartidaInput } from "../modelos/Partida.model";
 import Videojuego from "../modelos/Videojuego.model";
@@ -13,8 +14,14 @@ export async function listarPartidas() {
   return Partida.find().populate("videojuego").sort({ fecha: -1 });
 }
 
-export async function crearPartida(input: PartidaInput) {
+// `ahora` se inyecta; el valor por defecto es el único reloj del flujo de partidas (R-22).
+export async function crearPartida(input: PartidaInput, ahora: Date = new Date()) {
   assertValidId(input.videojuego, "videojuego");
+
+  const errorDeRegla = validarPartidaNueva(input, ahora);
+  if (errorDeRegla) {
+    throw new ApiError(errorDeRegla, 400);
+  }
 
   const videojuegoExiste = await Videojuego.exists({ _id: input.videojuego });
   if (!videojuegoExiste) {

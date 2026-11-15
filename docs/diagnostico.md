@@ -78,7 +78,7 @@ Clasificación **propuesta**; la decisión final es de la estudiante.
 | ID | Decisión | Motivo |
 |---|---|---|
 | D-01 | **Bloquea.** Se resuelve en T-01 (Vitest) | Sin runner no hay tests de dominio ni regla de “tests antes de terminar”|
-| D-02 | **Bloquea.** El día se calcula en el dominio con Intl y America/Guayaquil; la interfaz muestra fechas en esa zona. Las fechas sin hora se rechazan (R-22, decidido en la fase 3) | Las rachas y la semana dependen del día correcto |
+| D-02 | **Bloquea.** El día se calcula en el dominio con Intl y America/Guayaquil; la interfaz muestra fechas en esa zona. Las fechas sin hora se rechazan (R-22, decidido en la fase 3). **Pagada** en T-02 (día en Ecuador), T-18 (fechas en pantalla) y T-20 (fechas sin hora → 400, CA-11.3), 15 nov 2026 | Las rachas y la semana dependen del día correcto |
 | D-03 | **Bloquea y se paga como deuda (fase 8).** porcentajeAvance pasa a ser obligatorio también en la API, y el resumen ignora las partidas sin avance y toma la más reciente que lo tenga (R-18). **Pagada en T-19** (15 nov 2026): test CA-12.2 en `Partida.model.test.ts`; CA-12.1 a CA-12.3 por curl en `docs/pruebas-api-E2.md` §5 | Es la causa de que los hitos “desaparezcan”. Requiere criterio, test y actualizar la fórmula del README |
 | D-04 | **Se difiere.**  | Es grande (backend y frontend) y no bloquea la épica. Se documenta que “editar” queda cubierto por borrar y recrear |
 | D-05 | **Bloquea.** Se resuelve en T-08: E11000 → 409 | SE2 exige 409 y la condición de carrera llegaría como 500 |
@@ -87,7 +87,7 @@ Clasificación **propuesta**; la decisión final es de la estudiante.
 | D-07 | **Se difiere** como refactor; se fija la convención en AGENTS.md y la spec | Reescribir las capas existentes no aporta a E2 |
 | D-08 | **Se difiere,** pero runValidators: true es regla DEBE en la spec de Meta | Evita saltarse los rangos y el máximo de 5 hitos |
 | D-09 | **Bloquea.** Hueco 7 decidido en la fase 3: un videojuego completado o abandonado no puede tener meta activa (R-19) y, si pasa a ese estado, su meta activa se desactiva sola (R-20) | Entra en E2: afecta a crear y reactivar metas y a la actualización del videojuego |
-| D-10 | **Se paga como deuda (fase 8):** rechazar fechas posteriores a hoy (Ecuador) y exigir una duración de 5 a 1440 minutos (R-22, decidido en la fase 3) | Pequeño, testeable y protege la racha y horasSemana |
+| D-10 | **Se paga como deuda (fase 8):** rechazar fechas posteriores a hoy (Ecuador) y exigir una duración de 5 a 1440 minutos (R-22, decidido en la fase 3). **Pagada en T-20** (15 nov 2026): tests CA-11.1 a CA-11.4 en `dominio/partida.test.ts`; curl en `docs/pruebas-api-E2.md` §5 | Pequeño, testeable y protege la racha y horasSemana |
 | D-11 | **Se difiere** | Con el volumen esperado no afecta el rendimiento |
 | D-12 | **Se difiere** a la fase 9 | Es documentación final |
 | D-13 | **Se difiere** se decide en DESIGN.md (autorizar Bootstrap con límites) | Es una decisión de diseño de la fase 2 |

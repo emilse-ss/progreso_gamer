@@ -66,8 +66,8 @@ Flujo de una petición: `ruta → middlewares → controlador → servicio → m
 
 | Campo | Tipo | Regla |
 | `videojuego` | ObjectId, `ref: "Videojuego"` | **Referenciado**; obligatorio y verificado en el servicio (404 si no existe) |
-| `fecha` | Date | Obligatoria |
-| `duracionMinutos` | number | Obligatoria y **mayor que cero** |
+| `fecha` | Date | Obligatoria. En la API, texto ISO **con hora y zona** (`Z` o `±hh:mm`) y de un día no posterior a hoy en Ecuador (desde E2, D-10 y D-02) |
+| `duracionMinutos` | number | Obligatoria, **de 5 a 1440** minutos (desde E2, D-10). Las partidas antiguas fuera de ese rango se conservan |
 | `porcentajeAvance` | number | Obligatorio en las partidas nuevas (desde E2, D-03), entre 0 y 100. Las partidas antiguas sin avance se conservan |
 | `notas` | string | Opcional |
 | `createdAt`, `updatedAt` | Date | Timestamps automáticos |
@@ -83,7 +83,9 @@ Flujo de una petición: `ruta → middlewares → controlador → servicio → m
 | Regla | Dónde | Justificación |
 | `nombre` obligatorio y con `trim` | Esquema y controlador | Sin nombre la ficha no es identificable; el `trim` evita nombres de solo espacios. |
 | `videojuego` obligatorio en Partida | Esquema y servicio | Una sesión huérfana no tiene sentido; el servicio comprueba que el juego exista porque `ref` por sí solo no lo garantiza. |
-| `duracionMinutos` > 0 | Esquema y controlador | Una sesión de 0 minutos no es una sesión y distorsiona `horasTotales`. |
+| `duracionMinutos` de 5 a 1440 | Servicio (dominio `validarPartidaNueva`) y esquema; el controlador solo comprueba que sea un número | Menos de 5 minutos no es una sesión; más de 1440 (un día entero) es un error de captura que distorsiona `horasTotales`, `horasSemana` y la racha (R-22). |
+| `fecha` con hora y zona | Controlador (`fechaConHoraYZona`) | Sin hora, `"2026-11-10"` se interpreta como `00:00Z`, que en Ecuador es el **día anterior** a las 19:00 (D-02). El formulario envía la hora escrita con `-05:00`. |
+| `fecha` no posterior a hoy (Ecuador) | Servicio (dominio `validarPartidaNueva`, con `ahora` inyectado) | Una sesión futura inflaría la semana y la racha. Se acepta una de hoy aunque su hora sea posterior a la actual (R-22). |
 | `porcentajeAvance` obligatorio y entre 0 y 100 | Esquema y controlador | Es un porcentaje; fuera de ese rango rompería el "avance actual". Es obligatorio para que una sesión sin avance no borre el avance actual ni los hitos (R-18, D-03). |
 | `plataforma`, `genero`, `estado` con valores cerrados | `enum` | Evita variantes como "pc" o "PC " y hace fiables los filtros. |
 | Logros acotados a 50 y sin catálogos externos | Servicio | Es una lista corta que viaja con el juego; el usuario escribe sus propios logros. |
