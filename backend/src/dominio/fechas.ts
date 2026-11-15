@@ -20,14 +20,13 @@ const formatoDia = new Intl.DateTimeFormat("en-CA", {
   timeZone: ZONA_HORARIA_NEGOCIO,
   year: "numeric",
   month: "2-digit",
-  day: "2-digit",
+  day: "2-digit"
 });
 
 /** Día de Ecuador al que pertenece un instante (R-02). */
 export function diaEcuador(instante: Date): Dia {
   const partes = formatoDia.formatToParts(instante);
-  const valor = (tipo: string) =>
-    partes.find((parte) => parte.type === tipo)?.value;
+  const valor = (tipo: string) => partes.find((parte) => parte.type === tipo)?.value;
   return `${valor("year")}-${valor("month")}-${valor("day")}`;
 }
 
@@ -55,10 +54,7 @@ export function semanaDe(ahora: Date): Semana {
  * Descarta las partidas de días posteriores a hoy en Ecuador; conserva las de hoy
  * aunque su hora sea posterior a `ahora` (R-23).
  */
-export function partidasHastaHoy<T extends PartidaDominio>(
-  partidas: T[],
-  ahora: Date,
-): T[] {
+export function partidasHastaHoy<T extends PartidaDominio>(partidas: T[], ahora: Date): T[] {
   const hoy = diaEcuador(ahora);
   return partidas.filter((partida) => diaEcuador(partida.fecha) <= hoy);
 }

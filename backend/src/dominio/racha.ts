@@ -1,10 +1,5 @@
 // Dominio: racha actual y mejor racha sobre todo el historial (R-04, R-05, R-06).
-import {
-  diaEcuador,
-  partidasHastaHoy,
-  sumarDias,
-  type PartidaDominio,
-} from "./fechas";
+import { diaEcuador, partidasHastaHoy, sumarDias, type PartidaDominio } from "./fechas";
 
 export interface Rachas {
   rachaActual: number;
@@ -18,17 +13,14 @@ export interface Rachas {
  */
 export function rachas(partidas: PartidaDominio[], ahora: Date): Rachas {
   const dias = new Set(
-    partidasHastaHoy(partidas, ahora).map((partida) =>
-      diaEcuador(partida.fecha),
-    ),
+    partidasHastaHoy(partidas, ahora).map((partida) => diaEcuador(partida.fecha))
   );
 
   let mejorRacha = 0;
   let longitud = 0;
   let anterior: string | null = null;
   for (const dia of [...dias].sort()) {
-    longitud =
-      anterior !== null && sumarDias(anterior, 1) === dia ? longitud + 1 : 1;
+    longitud = anterior !== null && sumarDias(anterior, 1) === dia ? longitud + 1 : 1;
     mejorRacha = Math.max(mejorRacha, longitud);
     anterior = dia;
   }

@@ -28,13 +28,10 @@ export function objetivoRepetido(hitos: HitoDominio[]): number | null {
 }
 
 /** Hitos ordenados, cada uno alcanzado si el avance actual llega a su objetivo (R-17). */
-export function evaluarHitos(
-  hitos: HitoDominio[],
-  avanceActual: number,
-): HitoEvaluado[] {
+export function evaluarHitos(hitos: HitoDominio[], avanceActual: number): HitoEvaluado[] {
   return ordenarHitos(hitos).map((hito) => ({
     descripcion: hito.descripcion,
     porcentajeObjetivo: hito.porcentajeObjetivo,
-    alcanzado: avanceActual >= hito.porcentajeObjetivo,
+    alcanzado: avanceActual >= hito.porcentajeObjetivo
   }));
 }

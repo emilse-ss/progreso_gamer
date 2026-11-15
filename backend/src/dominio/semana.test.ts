@@ -4,7 +4,7 @@ import { horasYDiasSemana, porcentajeHoras } from "./semana";
 const ecuador = (fechaHora: string) => new Date(`${fechaHora}-05:00`);
 const partida = (fechaHora: string, duracionMinutos: number) => ({
   fecha: ecuador(fechaHora),
-  duracionMinutos,
+  duracionMinutos
 });
 
 const semana9a15 = { inicio: "2026-11-09", fin: "2026-11-15" };
@@ -15,15 +15,15 @@ describe("horasYDiasSemana", () => {
     const partidas = [
       partida("2026-11-08T22:00:00", 60),
       partida("2026-11-11T20:00:00", 60),
-      partida("2026-11-16T00:30:00", 30),
+      partida("2026-11-16T00:30:00", 30)
     ];
     expect(horasYDiasSemana(partidas, semana9a15)).toEqual({
       horasSemana: 1,
-      diasJugadosSemana: 1,
+      diasJugadosSemana: 1
     });
     expect(horasYDiasSemana(partidas, semana16a22)).toEqual({
       horasSemana: 0.5,
-      diasJugadosSemana: 1,
+      diasJugadosSemana: 1
     });
   });
 
@@ -31,11 +31,11 @@ describe("horasYDiasSemana", () => {
     const partidas = [partida("2026-11-15T23:30:00", 90)];
     expect(horasYDiasSemana(partidas, semana9a15)).toEqual({
       horasSemana: 1.5,
-      diasJugadosSemana: 1,
+      diasJugadosSemana: 1
     });
     expect(horasYDiasSemana(partidas, semana16a22)).toEqual({
       horasSemana: 0,
-      diasJugadosSemana: 0,
+      diasJugadosSemana: 0
     });
   });
 
@@ -43,18 +43,18 @@ describe("horasYDiasSemana", () => {
     const partidas = [
       partida("2026-11-10T10:00:00", 60),
       partida("2026-11-10T21:00:00", 45),
-      partida("2026-11-10T23:30:00", 30),
+      partida("2026-11-10T23:30:00", 30)
     ];
     expect(horasYDiasSemana(partidas, semana9a15)).toEqual({
       horasSemana: 2.3,
-      diasJugadosSemana: 1,
+      diasJugadosSemana: 1
     });
   });
 
   it("sin partidas: 0 horas y 0 días", () => {
     expect(horasYDiasSemana([], semana9a15)).toEqual({
       horasSemana: 0,
-      diasJugadosSemana: 0,
+      diasJugadosSemana: 0
     });
   });
 });
@@ -64,7 +64,7 @@ describe("porcentajeHoras", () => {
     const partidas = [
       partida("2026-11-09T20:00:00", 70),
       partida("2026-11-10T20:00:00", 70),
-      partida("2026-11-11T20:00:00", 70),
+      partida("2026-11-11T20:00:00", 70)
     ];
     const { horasSemana } = horasYDiasSemana(partidas, semana9a15);
     expect(horasSemana).toBe(3.5);
@@ -75,7 +75,7 @@ describe("porcentajeHoras", () => {
     const partidas = [
       partida("2026-11-09T20:00:00", 120),
       partida("2026-11-11T20:00:00", 180),
-      partida("2026-11-14T20:00:00", 120),
+      partida("2026-11-14T20:00:00", 120)
     ];
     const { horasSemana } = horasYDiasSemana(partidas, semana9a15);
     expect(horasSemana).toBe(7);

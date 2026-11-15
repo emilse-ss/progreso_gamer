@@ -9,7 +9,11 @@
   "overrides": [
     {
       "files": "backend/**",
-      "options": { "singleQuote": false }
+      "options": {
+        "singleQuote": false,
+        "trailingComma": "none",
+        "printWidth": 100
+      }
     }
   ]
 }

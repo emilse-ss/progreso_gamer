@@ -37,12 +37,12 @@ describe("semanaDe", () => {
     expect(semanaDe(ecuador("2026-11-15T23:59:00"))).toEqual(semana9a15);
     expect(semanaDe(ecuador("2026-11-16T00:10:00"))).toEqual({
       inicio: "2026-11-16",
-      fin: "2026-11-22",
+      fin: "2026-11-22"
     });
     // El domingo 8 a las 22:00 pertenece a la semana anterior, aunque en UTC ya sea lunes 9.
     expect(semanaDe(ecuador("2026-11-08T22:00:00"))).toEqual({
       inicio: "2026-11-02",
-      fin: "2026-11-08",
+      fin: "2026-11-08"
     });
   });
 });
@@ -53,7 +53,7 @@ describe("partidasHastaHoy", () => {
   it("CA-04.8 descarta una partida de un día futuro ya guardada", () => {
     const partidas = [
       { fecha: ecuador("2026-11-11T20:00:00"), duracionMinutos: 60 },
-      { fecha: ecuador("2026-11-17T20:00:00"), duracionMinutos: 120 },
+      { fecha: ecuador("2026-11-17T20:00:00"), duracionMinutos: 120 }
     ];
     expect(partidasHastaHoy(partidas, ahora)).toEqual([partidas[0]]);
   });
@@ -61,7 +61,7 @@ describe("partidasHastaHoy", () => {
   it("CA-04.9 conserva una partida de hoy con hora posterior a ahora", () => {
     const partidas = [
       { fecha: ecuador("2026-11-15T18:00:00"), duracionMinutos: 60 },
-      { fecha: ecuador("2026-11-16T00:30:00"), duracionMinutos: 30 },
+      { fecha: ecuador("2026-11-16T00:30:00"), duracionMinutos: 30 }
     ];
     expect(partidasHastaHoy(partidas, ahora)).toEqual([partidas[0]]);
   });
