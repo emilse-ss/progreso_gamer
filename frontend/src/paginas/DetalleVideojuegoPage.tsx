@@ -512,6 +512,7 @@ export function DetalleVideojuegoPage() {
         <SeccionProgreso
           alCambiarMetas={alCambiarMetas}
           estadoVideojuego={videojuego?.estado}
+          nombreVideojuego={videojuego?.nombre}
           versionMetas={versionMetas}
           videojuegoId={id}
         />

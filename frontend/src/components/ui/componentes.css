@@ -1309,6 +1309,14 @@
   gap: var(--esp-1);
 }
 
+/* E2 · Metas inactivas (spec frontend §3.5 d) */
+.metas-inactivas__lista {
+  display: grid;
+  gap: var(--esp-3);
+  list-style: none;
+  padding: 0;
+}
+
 /* E2 · Formulario de meta con hitos (spec frontend §3.5 b) */
 .meta-form__hitos {
   border: var(--borde-grueso);

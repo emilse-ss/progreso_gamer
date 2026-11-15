@@ -19,6 +19,20 @@ export function formatearDia(dia: string): string {
   );
 }
 
+const formatoFechaCorta = new Intl.DateTimeFormat('es-EC', {
+  timeZone: ZONA_HORARIA,
+  day: 'numeric',
+  month: 'short',
+});
+
+/** Día de un instante ISO en hora de Ecuador: «13 nov». */
+export function formatearFechaCorta(instante: string): string {
+  const fecha = new Date(instante);
+  return Number.isNaN(fecha.getTime())
+    ? 'fecha no disponible'
+    : formatoFechaCorta.format(fecha);
+}
+
 /** «9 nov al 15 nov» para la semana del progreso. */
 export function formatearRangoSemana(inicio: string, fin: string): string {
   return `${formatearDia(inicio)} al ${formatearDia(fin)}`;

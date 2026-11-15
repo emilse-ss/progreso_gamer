@@ -1,6 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { listarMetasDeVideojuego } from '../api/metasApi';
+import { ApiError } from '../api/ApiError';
+import {
+  desactivarMeta,
+  listarMetasDeVideojuego,
+  reactivarMeta,
+} from '../api/metasApi';
 import { obtenerProgresoSemanal } from '../api/videojuegosApi';
 import type { EstadoVideojuego } from '../enums';
 import type { Meta, ProgresoSemanal } from '../types';
@@ -10,10 +15,13 @@ import { BarraProgreso } from './ui/BarraProgreso';
 import { Boton } from './ui/Boton';
 import { EtiquetaSeccion } from './ui/EtiquetaSeccion';
 import { IconoTrofeo } from './ui/iconos';
+import { ModalConfirmacion } from './ui/ModalConfirmacion';
 import { Skeleton } from './ui/Skeleton';
+import { MetasInactivas } from './MetasInactivas';
 
 interface SeccionProgresoProps {
   videojuegoId: string;
+  nombreVideojuego?: string;
   estadoVideojuego?: EstadoVideojuego;
   /** Clave de recarga: cambia cuando cambian las partidas (DEBE-6). */
   versionPartidas?: number;
@@ -32,15 +40,57 @@ const dias = (n: number) => `${n} ${n === 1 ? 'día' : 'días'}`;
 
 export function SeccionProgreso({
   videojuegoId,
+  nombreVideojuego,
   estadoVideojuego,
   versionPartidas = 0,
   versionMetas,
+  alCambiarMetas,
 }: SeccionProgresoProps) {
   const [progreso, setProgreso] = useState<ProgresoSemanal | null>(null);
   const [metas, setMetas] = useState<Meta[]>([]);
   const [cargando, setCargando] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [reintento, setReintento] = useState(0);
+  const [confirmacionAbierta, setConfirmacionAbierta] = useState(false);
+  const [desactivando, setDesactivando] = useState(false);
+  const [reactivandoId, setReactivandoId] = useState<string | null>(null);
+  const [errorAccion, setErrorAccion] = useState<string | null>(null);
+
+  // Un 409 significa que el estado cambió en otro lado: se muestra el mensaje y se
+  // vuelve a consultar para enseñar el estado real (DEBE-7).
+  function manejarErrorAccion(causa: unknown, fallback: string) {
+    setErrorAccion(errorMessage(causa, fallback));
+    if (causa instanceof ApiError && causa.status === 409) {
+      alCambiarMetas();
+    }
+  }
+
+  async function handleDesactivar(id: string) {
+    setConfirmacionAbierta(false);
+    setDesactivando(true);
+    setErrorAccion(null);
+    try {
+      await desactivarMeta(id);
+      alCambiarMetas();
+    } catch (causa: unknown) {
+      manejarErrorAccion(causa, 'No se pudo desactivar la meta.');
+    } finally {
+      setDesactivando(false);
+    }
+  }
+
+  async function handleReactivar(id: string) {
+    setReactivandoId(id);
+    setErrorAccion(null);
+    try {
+      await reactivarMeta(id);
+      alCambiarMetas();
+    } catch (causa: unknown) {
+      manejarErrorAccion(causa, 'No se pudo reactivar la meta.');
+    } finally {
+      setReactivandoId(null);
+    }
+  }
 
   useEffect(() => {
     let cancelled = false;
@@ -239,10 +289,42 @@ export function SeccionProgreso({
                 >
                   Editar meta
                 </Link>
+                <Boton
+                  disabled={desactivando}
+                  onClick={() => setConfirmacionAbierta(true)}
+                  variante="peligro"
+                >
+                  {desactivando ? 'Desactivando…' : 'Desactivar meta'}
+                </Boton>
               </div>
             </>
           )}
+
+          {errorAccion && (
+            <AlertMessage variant="error">{errorAccion}</AlertMessage>
+          )}
+
+          <MetasInactivas
+            alReactivar={(id) => void handleReactivar(id)}
+            metas={metas.filter((meta) => !meta.activa)}
+            puedeReactivar={!metaActiva && !juegoSinMetaPosible}
+            reactivandoId={reactivandoId}
+          />
         </div>
+      )}
+
+      {metaActiva && (
+        <ModalConfirmacion
+          abierto={confirmacionAbierta}
+          confirmando={desactivando}
+          etiquetaConfirmar="Desactivar"
+          onCancelar={() => setConfirmacionAbierta(false)}
+          onConfirmar={() => void handleDesactivar(metaActiva._id)}
+          titulo={`¿Desactivar la meta de ${nombreVideojuego ?? 'este videojuego'}?`}
+        >
+          La meta pasará a tus metas anteriores. Podrás reactivarla cuando
+          quieras.
+        </ModalConfirmacion>
       )}
     </section>
   );
