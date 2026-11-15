@@ -21,6 +21,7 @@ import {
 } from "../services/videojuego.service";
 import { listarPartidasPorVideojuego } from "../services/partida.service";
 import { listarMetasPorVideojuego } from "../services/meta.service";
+import { obtenerProgresoSemanal } from "../services/progreso.service";
 
 type IdParams = { id: string };
 type LogroParams = { id: string; logroId: string };
@@ -217,6 +218,15 @@ export const listarPartidas: RequestHandler<IdParams> = async (
       partidas,
       requestId: response.locals.requestId
     });
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+export const progresoSemanal: RequestHandler<IdParams> = async (request, response, next) => {
+  try {
+    const progreso = await obtenerProgresoSemanal(request.params.id);
+    response.status(200).json({ ...progreso, requestId: response.locals.requestId });
   } catch (error: unknown) {
     next(error);
   }
