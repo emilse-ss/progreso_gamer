@@ -1256,13 +1256,21 @@
   gap: var(--esp-3);
 }
 
-.progress-week__titulo-barra,
-.progress-week__subtitulo {
+.progress-week__titulo-barra {
   font-family: var(--fuente-texto);
   font-size: var(--texto-14);
   font-style: normal;
   font-weight: 800;
   margin-bottom: var(--esp-1);
+}
+
+/* Títulos de sección (h3): fuente de título, cursiva y tamaño 20 (DESIGN.md › Tipografía). */
+.progress-week__subtitulo {
+  font-family: var(--fuente-titulo);
+  font-size: var(--texto-20);
+  font-style: italic;
+  font-weight: 800;
+  margin-bottom: var(--esp-2);
 }
 
 .progress-week__cumplimiento,
