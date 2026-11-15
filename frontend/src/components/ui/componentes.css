@@ -1240,6 +1240,75 @@
   text-underline-offset: var(--esp-1);
 }
 
+/* E2 · Sección de progreso semanal (spec frontend §3.5 a) */
+.progress-week {
+  display: grid;
+  gap: var(--esp-4);
+}
+
+.progress-week__rango {
+  font-size: var(--texto-14);
+  font-weight: 800;
+}
+
+.progress-week__barras {
+  display: grid;
+  gap: var(--esp-3);
+}
+
+.progress-week__titulo-barra,
+.progress-week__subtitulo {
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-14);
+  font-style: normal;
+  font-weight: 800;
+  margin-bottom: var(--esp-1);
+}
+
+.progress-week__cumplimiento,
+.progress-week__vacio {
+  font-size: var(--texto-14);
+  font-weight: 700;
+}
+
+.progress-week__hitos {
+  display: grid;
+  gap: var(--esp-2);
+  list-style: none;
+  padding: 0;
+}
+
+.progress-week__hito {
+  align-items: center;
+  background: var(--crema);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2) var(--esp-3);
+  justify-content: space-between;
+  min-height: var(--alto-tactil);
+  padding: var(--esp-2) var(--esp-3);
+}
+
+.progress-week__hito--alcanzado {
+  background: var(--amarillo);
+  color: var(--negro);
+}
+
+.progress-week__objetivo {
+  font-size: var(--texto-12);
+  font-weight: 700;
+}
+
+.progress-week__hito-estado {
+  align-items: center;
+  display: inline-flex;
+  font-size: var(--texto-14);
+  font-weight: 800;
+  gap: var(--esp-1);
+}
+
 @media (min-width: 48rem) {
   .app-navbar__inner {
     flex-wrap: nowrap;

@@ -18,6 +18,7 @@ import { EtiquetaSeccion } from '../components/ui/EtiquetaSeccion';
 import { Insignia } from '../components/ui/Insignia';
 import { ModalConfirmacion } from '../components/ui/ModalConfirmacion';
 import { PageContainer } from '../components/ui/PageContainer';
+import { SeccionProgreso } from '../components/SeccionProgreso';
 import { Skeleton } from '../components/ui/Skeleton';
 import { IconoCalendario, IconoMando, IconoReloj, IconoTrofeo } from '../components/ui/iconos';
 import type {
@@ -87,6 +88,9 @@ export function DetalleVideojuegoPage() {
   >(null);
   const [guardandoLogro, setGuardandoLogro] = useState(false);
   const [logroEnProcesoId, setLogroEnProcesoId] = useState<string | null>(null);
+  // Clave de recarga de la sección de progreso cuando cambian las metas (DEBE-7).
+  const [versionMetas, setVersionMetas] = useState(0);
+  const alCambiarMetas = () => setVersionMetas((version) => version + 1);
 
   useEffect(() => {
     if (!id) {
@@ -503,6 +507,15 @@ export function DetalleVideojuegoPage() {
           </>
         )}
       </section>
+
+      {id && (
+        <SeccionProgreso
+          alCambiarMetas={alCambiarMetas}
+          estadoVideojuego={videojuego?.estado}
+          versionMetas={versionMetas}
+          videojuegoId={id}
+        />
+      )}
 
       <section aria-labelledby="partidas-videojuego" className="detail-block">
         <div className="detail-block__header">
