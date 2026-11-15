@@ -78,16 +78,16 @@ Clasificación **propuesta**; la decisión final es de la estudiante.
 | ID | Decisión | Motivo |
 |---|---|---|
 | D-01 | **Bloquea.** Se resuelve en T-01 (Vitest) | Sin runner no hay tests de dominio ni regla de “tests antes de terminar”|
-| D-02 | **Bloquea.** El día se calcula en el dominio con Intl y America/Guayaquil; la interfaz muestra fechas en esa zona. Rechazar fechas sin hora se decide en la spec | Las rachas y la semana dependen del día correcto |
-| D-03 | **Bloquea y se paga como deuda (fase 8).** porcentajeAvance pasa a ser obligatorio también en la API | Es la causa de que los hitos “desaparezcan”. Requiere criterio, test y actualizar la fórmula del README |
+| D-02 | **Bloquea.** El día se calcula en el dominio con Intl y America/Guayaquil; la interfaz muestra fechas en esa zona. Las fechas sin hora se rechazan (R-22, decidido en la fase 3) | Las rachas y la semana dependen del día correcto |
+| D-03 | **Bloquea y se paga como deuda (fase 8).** porcentajeAvance pasa a ser obligatorio también en la API, y el resumen ignora las partidas sin avance y toma la más reciente que lo tenga (R-18) | Es la causa de que los hitos “desaparezcan”. Requiere criterio, test y actualizar la fórmula del README |
 | D-04 | **Se difiere.**  | Es grande (backend y frontend) y no bloquea la épica. Se documenta que “editar” queda cubierto por borrar y recrear |
 | D-05 | **Bloquea.** Se resuelve en T-08: E11000 → 409 | SE2 exige 409 y la condición de carrera llegaría como 500 |
 | D-06a | **Bloquea.** Extender la cascada a Meta (activas e inactivas) | Es la decisión del hueco 8 |
 | D-06b | **Se difiere.** Extender la cascada a Meta (activas e inactivas) | Sin transacción hay un riesgo pequeño; las transacciones exigen réplica y complican el despliegue |
 | D-07 | **Se difiere** como refactor; se fija la convención en AGENTS.md y la spec | Reescribir las capas existentes no aporta a E2 |
 | D-08 | **Se difiere,** pero runValidators: true es regla DEBE en la spec de Meta | Evita saltarse los rangos y el máximo de 5 hitos |
-| D-09 | **Pendiente de la fase 3 (hueco 7)** | Si la decisión es “no puede tener meta”, entra en E2 |
-| D-10 | **Se paga como deuda (fase 8):** crechazar fechas futuras y fijar una duración máxima | Pequeño, testeable y protege la racha y horasSemana |
+| D-09 | **Bloquea.** Hueco 7 decidido en la fase 3: un videojuego completado o abandonado no puede tener meta activa (R-19) y, si pasa a ese estado, su meta activa se desactiva sola (R-20) | Entra en E2: afecta a crear y reactivar metas y a la actualización del videojuego |
+| D-10 | **Se paga como deuda (fase 8):** rechazar fechas posteriores a hoy (Ecuador) y exigir una duración de 5 a 1440 minutos (R-22, decidido en la fase 3) | Pequeño, testeable y protege la racha y horasSemana |
 | D-11 | **Se difiere** | Con el volumen esperado no afecta el rendimiento |
 | D-12 | **Se difiere** a la fase 9 | Es documentación final |
 | D-13 | **Se difiere** se decide en DESIGN.md (autorizar Bootstrap con límites) | Es una decisión de diseño de la fase 2 |
