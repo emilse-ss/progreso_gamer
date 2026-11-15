@@ -110,7 +110,7 @@ Estas tareas surgieron durante el diagnóstico, pero no forman parte de su tabla
 | 3. PRD y épicas | ☑ |
 | 4. Backlog | ☑ |
 | 5. Specs | ☑ |
-| 6. Backend | ☐ |
+| 6. Backend | ☑ |
 | 7. Frontend | ☐ |
 | 8. Deuda técnica | ☐ |
 | 9. Auditoría, despliegue y PR | ☐ |
