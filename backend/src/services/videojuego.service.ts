@@ -8,6 +8,7 @@ import Videojuego, {
   VideojuegoInput,
   VideojuegoUpdateInput
 } from "../modelos/Videojuego.model";
+import Meta from "../modelos/Meta.model";
 import Partida from "../modelos/Partida.model";
 
 export type LogroUpdateInput = Partial<LogroInput>;
@@ -98,7 +99,10 @@ export async function eliminarVideojuego(id: string): Promise<void> {
     throw new ApiError("Videojuego no encontrado", 404);
   }
 
+  // Cascada (R-21): partidas, luego todas sus metas (activas e inactivas) y luego el videojuego.
+  // Sin transacción: el riesgo de un fallo a mitad queda diferido (D-06b).
   await Partida.deleteMany({ videojuego: videojuego._id });
+  await Meta.deleteMany({ videojuego: videojuego._id });
   await videojuego.deleteOne();
 }
 
