@@ -24,8 +24,8 @@ Una sola persona: la misma que registra sus videojuegos y partidas en el diario.
 
 **E2 · Metas y rachas (nuevo):**
 
-- Crear, editar, desactivar y reactivar la meta semanal de un videojuego, con sus hitos de avance.
-- Ver, en el detalle del juego, el progreso de la **semana actual**: horas frente a la meta, días jugados frente a los días objetivo, racha actual, mejor racha y estado de cada hito.
+- Crear, editar, desactivar y reactivar la meta semanal de un videojuego, con sus hitos de avance, y ver la lista de sus metas inactivas.
+- Ver, en el detalle del juego, el progreso de la **semana actual**: horas frente a la meta, días jugados frente a los días objetivo, si la meta está cumplida, racha actual, mejor racha y estado de cada hito.
 - El progreso se actualiza al registrar o eliminar una partida.
 - Reglas nuevas sobre las partidas (R-22) y sobre el avance actual (R-18), que protegen el cálculo del progreso.
 
@@ -73,8 +73,8 @@ _Ejemplo:_ 60 + 45 + 30 = 135 min → 2.3 h.
 **R-08 · Porcentaje de horas.** Horas de la semana (ya redondeadas) divididas entre las horas de la meta, en porcentaje entero y **con tope en 100 %**.
 _Ejemplo:_ con una meta de 5 h, jugar 2 h el lunes 9, 3 h el miércoles 11 y 2 h el sábado 14 (7 h en total) da 100 %, no 140 %. Con la misma meta, 298 minutos son 5.0 h, que también dan 100 %.
 
-**R-09 · Meta semanal cumplida.** La meta de una semana se cumple cuando se llega al 100 % de las horas **y** se alcanzan los días objetivo.
-_Ejemplo:_ con una meta de 5 h y 4 días, jugar 5 h solo el sábado 14 **no** la cumple (1 de 4 días). Jugar 1.5 h el lunes 9, el miércoles 11, el viernes 13 y el domingo 15 (6 h en 4 días) sí la cumple.
+**R-09 · Meta semanal cumplida.** La meta de una semana se cumple cuando se llega al 100 % de las horas **y** se alcanzan los días objetivo. La sección de progreso indica si la meta de la semana actual está cumplida o no.
+_Ejemplo:_ con una meta de 5 h y 4 días, jugar 5 h solo el sábado 14 **no** la cumple (1 de 4 días) y así se indica. Jugar 1.5 h el lunes 9, el miércoles 11, el viernes 13 y el domingo 15 (6 h en 4 días) sí la cumple y se indica como cumplida.
 
 **R-10 · Meta con la que se evalúa la semana.** La semana se evalúa con la meta activa en el momento de consultar, para la semana completa. Eso incluye las partidas anteriores a la creación o a la edición de la meta.
 _Ejemplo:_ la meta de 5 h se cambia a 10 h el miércoles 11 a las 18:00. El domingo 15, con 6 h jugadas en la semana, el progreso es del 60 % (6 de 10), no del 120 %. Del mismo modo, si la meta se crea el jueves 12, las partidas del lunes 9 al miércoles 11 cuentan.
@@ -102,8 +102,8 @@ _Ejemplo:_ con partidas del 1 al 9 de noviembre y luego del 12 al 15, la racha a
 
 ### Meta
 
-**R-12 · Límites de la meta.** Una meta define horas por semana (más de 0 y como máximo 100) y días por semana (un número entero de 1 a 7).
-_Ejemplo:_ «4.5 h en 3 días» es válida. «0 h», «120 h» y «8 días» se rechazan.
+**R-12 · Límites de la meta.** Una meta define horas por semana (un número entero de 1 a 100) y días por semana (un número entero de 1 a 7).
+_Ejemplo:_ «5 h en 3 días» es válida. «4.5 h», «0 h», «120 h» y «8 días» se rechazan.
 
 **R-13 · Una sola meta activa.** Un videojuego tiene como máximo una meta activa. Intentar tener una segunda se rechaza con un mensaje claro.
 _Ejemplo:_ si «Hades» tiene una meta activa desde el lunes 9, crear otra el miércoles 11 se rechaza. Para cambiarla, se edita la actual (R-14) o se desactiva y se crea una nueva.
@@ -111,11 +111,11 @@ _Ejemplo:_ si «Hades» tiene una meta activa desde el lunes 9, crear otra el mi
 **R-14 · Edición.** Solo se puede editar la meta activa: horas, días e hitos. El videojuego al que pertenece una meta no cambia nunca. La edición se aplica a la semana en curso según R-10.
 _Ejemplo:_ el jueves 12, la meta activa de «Hades» pasa de 3 a 5 días. Una meta desactivada el lunes 9 no se puede editar.
 
-**R-15 · Desactivar, reactivar y conservar.** Una meta se puede desactivar y volver a activar, pero no se borra. Las metas inactivas forman el historial del juego. La reactivación respeta R-13 y R-19.
+**R-15 · Desactivar, reactivar y conservar.** Una meta se puede desactivar y volver a activar, pero no se borra. Las metas inactivas forman el historial del juego: la persona ve la lista de metas inactivas de cada juego y puede reactivar cualquiera de ellas. La reactivación respeta R-13 y R-19.
 _Ejemplo:_ la meta A se desactiva el lunes 9 y se crea la B. El viernes 13, reactivar A se rechaza porque B está activa; si antes se desactiva B, A puede reactivarse.
 
-**R-16 · Hitos.** Una meta tiene entre 0 y 5 hitos. Cada hito tiene un objetivo de 1 a 100 % y una descripción opcional. No puede haber dos hitos con el mismo objetivo en una meta, y se muestran ordenados de menor a mayor objetivo.
-_Ejemplo:_ los hitos «50 %, 25 %, 100 %» se muestran como 25 %, 50 % y 100 %. «50 % Mitad» junto con «50 % Mitad otra vez» se rechaza. Una meta sin hitos es válida.
+**R-16 · Hitos.** Una meta tiene entre 0 y 5 hitos. Cada hito tiene un objetivo entero de 1 a 100 % y una descripción opcional. No puede haber dos hitos con el mismo objetivo en una meta, y se muestran ordenados de menor a mayor objetivo.
+_Ejemplo:_ los hitos «50 %, 25 %, 100 %» se muestran como 25 %, 50 % y 100 %. «50 % Mitad» junto con «50 % Mitad otra vez» se rechaza, igual que un hito de «33.3 %». Una meta sin hitos es válida.
 
 **R-17 · Hito alcanzado.** Un hito está alcanzado **mientras** el avance actual sea mayor o igual que su objetivo; si el avance baja, deja de estarlo.
 _Ejemplo:_ hitos de 25 % y 50 %. El lunes 9 se registra una partida con avance 55: los dos están alcanzados. El miércoles 11 se registra otra con avance 40: el de 25 % sigue alcanzado y el de 50 % ya no.

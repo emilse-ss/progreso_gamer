@@ -34,11 +34,12 @@
 
 - **Meta semanal por videojuego:** horas por semana, días por semana y de 0 a 5 hitos de avance (R-12, R-16).
   - Como máximo una meta activa por videojuego (R-13).
-  - Se crea, se edita solo si está activa, se desactiva y se reactiva; nunca se borra (R-14, R-15).
+  - Se crea, se edita solo si está activa, se desactiva y se reactiva desde la lista de metas inactivas; nunca se borra (R-14, R-15).
   - Un videojuego completado o abandonado no puede tener meta activa (R-19, R-20).
 - **Progreso de la semana actual** en el detalle del videojuego (R-01 a R-11, R-23):
   - Horas jugadas frente a la meta, con su porcentaje (tope en 100 %).
   - Días jugados frente a los días objetivo.
+  - Si la meta de la semana está cumplida: horas y días (R-09).
   - Racha actual y mejor racha.
   - Estado de cada hito: alcanzado o no (R-17, R-18).
 - **Estados de la sección de progreso:** cargando, error, sin partidas y sin meta activa. Este último invita a crear una meta.
