@@ -38,7 +38,7 @@ Los IDs son **estables**: nunca se renumeran ni se reutilizan. Son lo que permit
 | `CA-XX.Y` | Criterio de aceptación de la historia XX | `CA-02.1` | Backlog |
 | `T-XX` | Ticket | `T-03` | Backlog y specs |
 
-**Los IDs del diagnóstico no son consecutivos:** D-07, D-08 y D-10 se gestionan fuera de ese documento (ver sección 6). No se renumera para no romper referencias.
+**Los IDs del diagnóstico son consecutivos (D-01 a D-14) y están congelados:** no se renumeran, no se reutilizan y un problema nuevo recibe el siguiente número libre (D-15). Solo D-06 se divide en D-06a y D-06b en la tabla de decisiones. Las tareas de la sección 6 no tienen ID `D-XX`.
 
 **Trazabilidad de ejemplo:** `R-02` (PRD) → `HU-03` y `CA-03.2` (backlog) → `T-03` (ticket) → fila en la spec (criterio → verificación) → test con el `CA` en su nombre → commit `feat(E2): T-03 ...` → fila en `AUDITORIA.md`.
 
@@ -82,7 +82,7 @@ backend/src/
 
 ## 6. Tareas fuera del diagnóstico
 
-Estos puntos se detectaron en el diagnóstico, pero se gestionan aquí para no mezclar el documento de estado con el de acciones. **Siguen siendo necesarios.**
+Estas tareas surgieron durante el diagnóstico, pero no forman parte de su tabla de problemas y **no tienen ID `D-XX`**: se gestionan aquí para no mezclar el documento de estado con el de acciones. **Siguen siendo necesarias.**
 
 | Tarea | Por qué importa | Cuándo |
 |---|---|---|
