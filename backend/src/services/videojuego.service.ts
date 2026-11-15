@@ -10,6 +10,7 @@ import Videojuego, {
 } from "../modelos/Videojuego.model";
 import Meta from "../modelos/Meta.model";
 import Partida from "../modelos/Partida.model";
+import { ESTADOS_SIN_META_ACTIVA } from "./meta.service";
 
 export type LogroUpdateInput = Partial<LogroInput>;
 
@@ -86,6 +87,11 @@ export async function actualizarVideojuego(
 
   if (!videojuego) {
     throw new ApiError("Videojuego no encontrado", 404);
+  }
+
+  // R-20: un juego completado o abandonado no conserva su meta activa; queda en el historial.
+  if (videojuego.estado && ESTADOS_SIN_META_ACTIVA.includes(videojuego.estado)) {
+    await Meta.updateMany({ videojuego: videojuego._id, activa: true }, { $set: { activa: false } });
   }
 
   return videojuego;

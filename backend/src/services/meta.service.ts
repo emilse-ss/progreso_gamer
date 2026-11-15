@@ -4,7 +4,8 @@ import { ApiError } from "../errors/ApiError";
 import Meta, { HitoInput, MetaInput, MetaUpdateInput } from "../modelos/Meta.model";
 import Videojuego from "../modelos/Videojuego.model";
 
-const ESTADOS_SIN_META_ACTIVA = ["completado", "abandonado"];
+/** Estados en los que un videojuego no puede tener una meta activa (R-19, R-20). */
+export const ESTADOS_SIN_META_ACTIVA = ["completado", "abandonado"];
 const MENSAJE_YA_TIENE_META_ACTIVA = "Este videojuego ya tiene una meta activa";
 const MENSAJE_YA_TIENE_OTRA_META_ACTIVA = "Este videojuego ya tiene otra meta activa";
 
