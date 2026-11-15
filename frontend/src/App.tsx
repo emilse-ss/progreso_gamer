@@ -3,6 +3,7 @@ import { AppLayout } from './components/AppLayout';
 import { DetalleVideojuegoPage } from './paginas/DetalleVideojuegoPage';
 import { ListaPartidasPage } from './paginas/ListaPartidasPage';
 import { ListaVideojuegosPage } from './paginas/ListaVideojuegosPage';
+import { MetaFormPage } from './paginas/MetaFormPage';
 import { NotFoundPage } from './paginas/NotFoundPage';
 import { PartidaFormPage } from './paginas/PartidaFormPage';
 import { VideojuegoFormPage } from './paginas/VideojuegoFormPage';
@@ -22,6 +23,8 @@ export function App() {
           path="/videojuegos/:id/partidas/nueva"
           element={<PartidaFormPage />}
         />
+        <Route path="/videojuegos/:id/meta/nueva" element={<MetaFormPage />} />
+        <Route path="/metas/:metaId/editar" element={<MetaFormPage />} />
         <Route path="*" element={<NotFoundPage />} />
       </Route>
     </Routes>

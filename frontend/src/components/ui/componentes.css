@@ -1309,6 +1309,44 @@
   gap: var(--esp-1);
 }
 
+/* E2 · Formulario de meta con hitos (spec frontend §3.5 b) */
+.meta-form__hitos {
+  border: var(--borde-grueso);
+  border-radius: var(--radio-l);
+  display: grid;
+  gap: var(--esp-3);
+  margin: 0;
+  padding: var(--esp-4);
+}
+
+.meta-form__leyenda {
+  float: none;
+  font-family: var(--fuente-titulo);
+  font-size: var(--texto-20);
+  font-style: italic;
+  font-weight: 800;
+  margin-bottom: var(--esp-2);
+  padding-inline: var(--esp-2);
+  width: auto;
+}
+
+.meta-form__hito {
+  align-items: end;
+  background: var(--gris-card);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  display: grid;
+  gap: var(--esp-3);
+  grid-template-columns: minmax(0, 1fr);
+  padding: var(--esp-3);
+}
+
+@media (min-width: 48rem) {
+  .meta-form__hito {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  }
+}
+
 @media (min-width: 48rem) {
   .app-navbar__inner {
     flex-wrap: nowrap;
