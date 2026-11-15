@@ -22,7 +22,7 @@ docs/          contexto/ diagnostico.md PLAN-E2.md prd/ backlog/ specs/
 
 - Dev: `npm run dev` (en `backend/` y en `frontend/`).
 - Build: `npm run build` (en cada paquete).
-- Test: `npm test` (Vitest, desde T-01); hasta entonces, verificar con `npm run build`.
+- Test: `npm test` en `backend/` (Vitest; los tests van junto a su archivo como `*.test.ts`).
 - Formato: `npm run format -- <archivos>` en la raíz. No reformatear el repositorio entero.
 
 ## Reglas
