@@ -18,7 +18,7 @@ Excepciones toleradas, porque no son tokens de diseño: `0`, `100%`, fracciones 
 | `--negro`                      | Texto principal y bordes (`--borde-grueso`)                                             |
 | `--gris-card`                  | Fondo de tarjetas, bloques de detalle, filtros y botón neutro                           |
 | `--carbon`                     | Encabezados de panel y modal, etiquetas de sección, pie y pista de la barra de progreso |
-| `--amarillo`                   | Acción principal, pestaña o enlace activo y decoraciones                                |
+| `--amarillo`                   | Acción principal, pestaña o enlace activo, decoraciones y hito alcanzado (E2)           |
 | `--rojo` / `--rojo-oscuro`     | Navbar, acción destructiva y error / insignias y botón del menú                         |
 | `--azul`                       | Acción secundaria, avisos informativos y estado «completado»                            |
 | `--verde` / `--verde-oscuro`   | Estado «jugando» / relleno de progreso, éxito y barra de grupo                          |
@@ -26,7 +26,8 @@ Excepciones toleradas, porque no son tokens de diseño: `0`, `100%`, fracciones 
 | `--naranja`, `--morado`        | Reservados: definidos, todavía sin uso. Si se usan, documentarlo aquí                   |
 
 - **Estados del videojuego:** solo con los alias `--estado-<estado>` y `--estado-<estado>-texto`, nunca con el color base directamente.
-- **Pares de contraste permitidos** (WCAG): negro sobre amarillo (12.2), crema (16.2), gris-card (15.3), verde (6.7) o azul (6.5); blanco sobre carbon (11.4), indigo (8.0), rojo (4.8) o verde-oscuro (4.8); rojo-oscuro sobre crema (6.4).
+- **Pares de contraste permitidos** (WCAG): negro sobre amarillo (12.2), crema (16.2), gris-card (15.3), verde (6.7) o azul (6.5); blanco sobre carbon (11.4), indigo (8.0), rojo (4.8) o verde-oscuro (4.8); rojo-oscuro sobre crema (6.4) o gris-card (6.1, la `Insignia` dentro de un `CardItem`).
+- **Hito alcanzado (E2):** fondo `--amarillo` con texto `--negro`, como un logro o trofeo, siempre con el texto «Alcanzado» y el icono de trofeo. No se usa verde para no confundirlo con el relleno de la barra de progreso.
 - **Prohibido:** texto negro sobre rojo (3.6). Sobre rojo, el texto siempre es blanco.
 - Las variables `--bs-*` de `tema.css` solo sirven para que Bootstrap herede la paleta. No se usan en CSS propio.
 
@@ -41,11 +42,12 @@ Excepciones toleradas, porque no son tokens de diseño: `0`, `100%`, fracciones 
   - 16: texto base y botones.
   - 20: títulos de tarjeta y sección.
   - 28 y 40: encabezados de panel, hero y cifras grandes.
+  - Excepción (E2): el rango de la semana en la cabecera del progreso y el estado de un hito («Alcanzado», «Pendiente») van en 14, porque son el dato principal de su línea y no una ayuda.
 
 ## Espaciado y forma
 
 - **Escala de 4 px:** `--esp-1` (4) a `--esp-8` (32). Las medidas mayores se componen con `calc()` sobre tokens, por ejemplo `calc(var(--esp-8) * 3)`.
-- **Radios:** `--radio-m` (14) para controles, botones e iconos; `--radio-l` (18) para tarjetas, paneles, alertas y modales.
+- **Radios:** `--radio-m` (14) para controles, botones e iconos; `--radio-l` (18) para tarjetas, paneles, alertas y modales. Un bloque anidado dentro de otro con `--radio-l` (la fila de un hito, el grupo de campos de un hito en el formulario) usa `--radio-m`, para que el radio interior no iguale al exterior.
 - **Bordes y sombra:** `--borde-grueso` en todo bloque con fondo propio. Los botones llevan `--sombra-dura` más `--filo-interior` y bajan `--esp-1` al pulsarlos.
 - **Layout:** el contenido mide como máximo `--ancho-contenido` (960). Es _mobile-first_: una columna, y desde `48rem` dos o cuatro columnas.
 
