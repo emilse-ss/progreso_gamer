@@ -89,6 +89,6 @@ Clasificación **propuesta**; la decisión final es de la estudiante.
 | D-09 | **Bloquea.** Hueco 7 decidido en la fase 3: un videojuego completado o abandonado no puede tener meta activa (R-19) y, si pasa a ese estado, su meta activa se desactiva sola (R-20) | Entra en E2: afecta a crear y reactivar metas y a la actualización del videojuego |
 | D-10 | **Se paga como deuda (fase 8):** rechazar fechas posteriores a hoy (Ecuador) y exigir una duración de 5 a 1440 minutos (R-22, decidido en la fase 3). **Pagada en T-20** (15 nov 2026): tests CA-11.1 a CA-11.4 en `dominio/partida.test.ts`; curl en `docs/pruebas-api-E2.md` §5 | Pequeño, testeable y protege la racha y horasSemana |
 | D-11 | **Se difiere** | Con el volumen esperado no afecta el rendimiento |
-| D-12 | **Se difiere** a la fase 9 | Es documentación final |
+| D-12 | **Se difiere** a la fase 9. **Resuelta en la fase 9** (15 nov 2026): tablas del README con su cabecera, sección «Cómo trabajamos con el agente» y Node 20 o superior | Es documentación final |
 | D-13 | **Se difiere** se decide en DESIGN.md (autorizar Bootstrap con límites) | Es una decisión de diseño de la fase 2 |
 | D-14 | **Se difiere** se cubre en la spec del frontend (T-12) | El refresco explícito es parte de la épica |
