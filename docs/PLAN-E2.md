@@ -113,7 +113,7 @@ Estas tareas surgieron durante el diagnóstico, pero no forman parte de su tabla
 | 6. Backend | ☑ |
 | 7. Frontend | ☑ (#11 y #19 de diseño cerrados como sugerencias no incorporadas) |
 | 8. Deuda técnica | ☑ (D-03 en T-19; D-10 y D-02 en T-20) |
-| 9. Auditoría, despliegue y PR | ◐ En curso: `AUDITORIA.md` (126 filas) y README actualizados; faltan el despliegue en Render, confirmar las URLs y el índice en producción, y el PR |
+| 9. Auditoría, despliegue y PR | ◐ En curso: `AUDITORIA.md` y README hechos; E2 desplegado en Render y URLs confirmadas; faltan comprobar el índice en producción y el PR |
 | 10. Demo | ☐ |
 
 _Se actualiza al cerrar cada fase, dentro del mismo commit._
