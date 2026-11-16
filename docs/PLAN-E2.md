@@ -111,7 +111,7 @@ Estas tareas surgieron durante el diagnóstico, pero no forman parte de su tabla
 | 4. Backlog | ☑ |
 | 5. Specs | ☑ |
 | 6. Backend | ☑ |
-| 7. Frontend | ☐ |
+| 7. Frontend | ☑ (#11 y #19 de diseño cerrados como sugerencias no incorporadas) |
 | 8. Deuda técnica | ☑ (D-03 en T-19; D-10 y D-02 en T-20) |
 | 9. Auditoría, despliegue y PR | ☐ |
 | 10. Demo | ☐ |

@@ -123,6 +123,20 @@ Se registraron para tener el **antes** de cada deuda (no eran fallos de la fase 
 | CA-11.3 y CA-11.4 | Fecha sin hora; duración fuera de 5 a 1440 min                                  | 400                                               | 201 en los cuatro casos (`"2026-11-10"`, 3, 1441 y 3000 min), verificado antes del código | ✅ 400 «La fecha debe incluir la hora y la zona horaria»; 400 «duracionMinutos debe estar entre 5 y 1440» con 3, 1441 y 3000; 201 con 5 y 1440 | T-20 (D-10, D-02) |
 | CA-11.5           | Las partidas creadas en el rojo (3, 1441 y 3000 min, sin hora) siguen guardadas | Siguen contando                                   | —                                                                                         | ✅ conservadas; el progreso de ese juego las suma (100.2 h, 3 días, racha 2)                                                                   | T-20 (D-10)       |
 
+**Formulario de partida tras T-20:** la estudiante lo verificó en el navegador el 15 nov 2026. Una partida de hoy se envía con `fecha` terminada en `-05:00` y responde 201; una de mañana muestra el 400 de la API; una de 3 min muestra la validación del formulario.
+
+**Impacto en la base real** (`diario_gamer`, 15 nov 2026). Conteo de solo lectura con la conexión de la app (`countDocuments` y `aggregate`, sin escrituras):
+
+| Medida                                                      | Valor  |
+| ----------------------------------------------------------- | ------ |
+| Juegos con partidas / partidas                              | 6 / 13 |
+| Partidas sin avance                                         | 0      |
+| Resúmenes que cambian con T-19 (la más reciente sin avance) | 0      |
+| Duración menor de 5 min / mayor de 1440 min                 | 0 / 0  |
+| Partidas de días posteriores a hoy (Ecuador)                | 0      |
+
+T-19 y T-20 no cambian ningún resumen ni ningún dato existente de la base real: solo afectan a las partidas nuevas.
+
 **Nota tras T-20:** el script de T-10 creaba una partida de H+2 para CA-04.8 y CA-05.7; ahora la API la rechaza con 400. Esos dos criterios quedan cubiertos por los tests de dominio (`fechas.test.ts`, `racha.test.ts`, `progreso.test.ts`) y por la partida futura que ya existe en el dataset B.
 
 ## 6. Observaciones
