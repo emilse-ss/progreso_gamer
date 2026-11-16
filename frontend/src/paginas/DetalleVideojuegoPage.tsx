@@ -9,6 +9,7 @@ import {
   obtenerResumenVideojuego,
   obtenerVideojuego,
 } from '../api/videojuegosApi';
+import { eliminarPartida } from '../api/partidasApi';
 import type { EstadoVideojuego, Genero } from '../enums';
 import { AlertMessage } from '../components/ui/AlertMessage';
 import { BarraProgreso } from '../components/ui/BarraProgreso';
@@ -18,6 +19,8 @@ import { EtiquetaSeccion } from '../components/ui/EtiquetaSeccion';
 import { Insignia } from '../components/ui/Insignia';
 import { ModalConfirmacion } from '../components/ui/ModalConfirmacion';
 import { PageContainer } from '../components/ui/PageContainer';
+import { SeccionProgreso } from '../components/SeccionProgreso';
+import { formatearFechaHora } from '../utils/formatoFecha';
 import { Skeleton } from '../components/ui/Skeleton';
 import { IconoCalendario, IconoMando, IconoReloj, IconoTrofeo } from '../components/ui/iconos';
 import type {
@@ -25,22 +28,6 @@ import type {
   Videojuego,
   VideojuegoResumenResponse,
 } from '../types';
-
-function formatDate(value: string | null): string {
-  if (!value) {
-    return 'Sin partidas registradas';
-  }
-
-  const date = new Date(value);
-  if (Number.isNaN(date.getTime())) {
-    return 'Fecha no disponible';
-  }
-
-  return new Intl.DateTimeFormat('es-EC', {
-    dateStyle: 'medium',
-    timeStyle: 'short',
-  }).format(date);
-}
 
 function errorMessage(error: unknown, fallback: string): string {
   return error instanceof Error ? error.message : fallback;
@@ -87,6 +74,17 @@ export function DetalleVideojuegoPage() {
   >(null);
   const [guardandoLogro, setGuardandoLogro] = useState(false);
   const [logroEnProcesoId, setLogroEnProcesoId] = useState<string | null>(null);
+  // Clave de recarga de la sección de progreso cuando cambian las metas (DEBE-7).
+  const [versionMetas, setVersionMetas] = useState(0);
+  const alCambiarMetas = () => setVersionMetas((version) => version + 1);
+  // Clave de recarga genérica: cualquier cambio en las partidas la dispara y vuelve a
+  // pedir el resumen, las partidas y el progreso (DEBE-6). Hoy la usan registrar (al
+  // volver del formulario el detalle se monta de nuevo) y eliminar; editar queda diferido (D-04).
+  const [versionPartidas, setVersionPartidas] = useState(0);
+  const alCambiarPartidas = () => setVersionPartidas((version) => version + 1);
+  const [partidaAEliminar, setPartidaAEliminar] = useState<PartidaListado | null>(null);
+  const [eliminandoPartida, setEliminandoPartida] = useState(false);
+  const [errorPartida, setErrorPartida] = useState<string | null>(null);
 
   useEffect(() => {
     if (!id) {
@@ -154,7 +152,7 @@ export function DetalleVideojuegoPage() {
     return () => {
       cancelled = true;
     };
-  }, [id, reintentoResumen]);
+  }, [id, reintentoResumen, versionPartidas]);
 
   useEffect(() => {
     if (!id) {
@@ -189,7 +187,7 @@ export function DetalleVideojuegoPage() {
     return () => {
       cancelled = true;
     };
-  }, [id, reintentoPartidas]);
+  }, [id, reintentoPartidas, versionPartidas]);
 
   async function handleDelete() {
     if (!id || !videojuego) {
@@ -276,6 +274,25 @@ export function DetalleVideojuegoPage() {
       setErrorLogro(errorMessage(error, 'No se pudo eliminar el logro.'));
     } finally {
       setLogroEnProcesoId(null);
+    }
+  }
+
+  async function handleEliminarPartida() {
+    if (!partidaAEliminar) {
+      return;
+    }
+
+    const partida = partidaAEliminar;
+    setPartidaAEliminar(null);
+    setEliminandoPartida(true);
+    setErrorPartida(null);
+    try {
+      await eliminarPartida(partida._id);
+      alCambiarPartidas();
+    } catch (error: unknown) {
+      setErrorPartida(errorMessage(error, 'No se pudo eliminar la partida.'));
+    } finally {
+      setEliminandoPartida(false);
     }
   }
 
@@ -489,7 +506,7 @@ export function DetalleVideojuegoPage() {
               </div>
               <div className="summary-stat summary-stat--date">
                 <dt>Última partida</dt>
-                <dd>{formatDate(resumen.ultimaPartida)}</dd>
+                <dd>{formatearFechaHora(resumen.ultimaPartida)}</dd>
               </div>
               <div className="summary-stat summary-stat--progress">
                 <dt>Avance actual</dt>
@@ -503,6 +520,17 @@ export function DetalleVideojuegoPage() {
           </>
         )}
       </section>
+
+      {id && (
+        <SeccionProgreso
+          alCambiarMetas={alCambiarMetas}
+          estadoVideojuego={videojuego?.estado}
+          nombreVideojuego={videojuego?.nombre}
+          versionMetas={versionMetas}
+          versionPartidas={versionPartidas}
+          videojuegoId={id}
+        />
+      )}
 
       <section aria-labelledby="partidas-videojuego" className="detail-block">
         <div className="detail-block__header">
@@ -518,6 +546,9 @@ export function DetalleVideojuegoPage() {
             </Link>
           )}
         </div>
+        {errorPartida && (
+          <AlertMessage variant="error">{errorPartida}</AlertMessage>
+        )}
         {partidasLoading && (
           <Skeleton cantidad={2} variante="tarjeta" />
         )}
@@ -550,12 +581,23 @@ export function DetalleVideojuegoPage() {
           <div className="detail-card-list">
             {partidas.map((partida) => (
               <CardItem
+                accion={
+                  <Boton
+                    aria-label={`Eliminar la partida del ${formatearFechaHora(partida.fecha)}`}
+                    disabled={eliminandoPartida}
+                    onClick={() => setPartidaAEliminar(partida)}
+                    tamaño="pequeno"
+                    variante="peligro"
+                  >
+                    Eliminar
+                  </Boton>
+                }
                 className="detail-item"
                 detalles={
                   <>
                     <span>
                       <IconoCalendario aria-hidden="true" />
-                      {formatDate(partida.fecha)}
+                      {formatearFechaHora(partida.fecha)}
                     </span>
                     <span>
                       <IconoReloj aria-hidden="true" />
@@ -575,6 +617,17 @@ export function DetalleVideojuegoPage() {
         )}
       </section>
       <ModalConfirmacion
+        abierto={partidaAEliminar !== null}
+        confirmando={eliminandoPartida}
+        onCancelar={() => setPartidaAEliminar(null)}
+        onConfirmar={() => void handleEliminarPartida()}
+        titulo="Eliminar partida"
+      >
+        ¿Eliminar la partida del{' '}
+        {partidaAEliminar ? formatearFechaHora(partidaAEliminar.fecha) : ''}? El
+        progreso de la semana se actualizará.
+      </ModalConfirmacion>
+      <ModalConfirmacion
         abierto={confirmacionAbierta}
         confirmando={eliminando}
         onCancelar={() => setConfirmacionAbierta(false)}
@@ -582,7 +635,7 @@ export function DetalleVideojuegoPage() {
         titulo="Eliminar videojuego"
       >
         ¿Eliminar &quot;{videojuego?.nombre}&quot;? También se borrarán todas
-        sus partidas. Esta acción no se puede deshacer.
+        sus partidas y sus metas. Esta acción no se puede deshacer.
       </ModalConfirmacion>
     </PageContainer>
   );

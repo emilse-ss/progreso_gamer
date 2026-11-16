@@ -6,6 +6,7 @@ import logger from "./middlewares/logger";
 import notFound from "./middlewares/notFound";
 import requestId from "./middlewares/requestId";
 import healthRoutes from "./routes/health.routes";
+import metaRoutes from "./routes/meta.routes";
 import partidaRoutes from "./routes/partida.routes";
 import videojuegoRoutes from "./routes/videojuego.routes";
 
@@ -19,6 +20,7 @@ app.use(express.json());
 app.use(healthRoutes);
 app.use("/api/partidas", partidaRoutes);
 app.use("/api/videojuegos", videojuegoRoutes);
+app.use("/api/metas", metaRoutes);
 app.use(notFound);
 app.use(errorHandler);
 

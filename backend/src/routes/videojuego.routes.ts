@@ -7,8 +7,10 @@ import {
   crearLogro,
   eliminar,
   listar,
+  listarMetas,
   listarPartidas,
   obtener,
+  progresoSemanal,
   resumen
 } from "../controllers/videojuego.controller";
 
@@ -16,7 +18,9 @@ const videojuegoRoutes = Router();
 
 videojuegoRoutes.get("/", listar);
 videojuegoRoutes.get("/:id/resumen", resumen);
+videojuegoRoutes.get("/:id/progreso-semanal", progresoSemanal);
 videojuegoRoutes.get("/:id/partidas", listarPartidas);
+videojuegoRoutes.get("/:id/metas", listarMetas);
 videojuegoRoutes.get("/:id", obtener);
 videojuegoRoutes.post("/", crear);
 videojuegoRoutes.put("/:id", actualizar);

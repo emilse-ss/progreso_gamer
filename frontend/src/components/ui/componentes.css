@@ -1240,6 +1240,129 @@
   text-underline-offset: var(--esp-1);
 }
 
+/* E2 · Sección de progreso semanal (spec frontend §3.5 a) */
+.progress-week {
+  display: grid;
+  gap: var(--esp-4);
+}
+
+.progress-week__rango {
+  font-size: var(--texto-14);
+  font-weight: 800;
+}
+
+.progress-week__barras {
+  display: grid;
+  gap: var(--esp-3);
+}
+
+.progress-week__titulo-barra {
+  font-family: var(--fuente-texto);
+  font-size: var(--texto-14);
+  font-style: normal;
+  font-weight: 800;
+  margin-bottom: var(--esp-1);
+}
+
+/* Títulos de sección (h3): fuente de título, cursiva y tamaño 20 (DESIGN.md › Tipografía). */
+.progress-week__subtitulo {
+  font-family: var(--fuente-titulo);
+  font-size: var(--texto-20);
+  font-style: italic;
+  font-weight: 800;
+  margin-bottom: var(--esp-2);
+}
+
+.progress-week__cumplimiento,
+.progress-week__vacio {
+  font-size: var(--texto-14);
+  font-weight: 700;
+}
+
+.progress-week__hitos {
+  display: grid;
+  gap: var(--esp-2);
+  list-style: none;
+  padding: 0;
+}
+
+.progress-week__hito {
+  align-items: center;
+  background: var(--crema);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-2) var(--esp-3);
+  justify-content: space-between;
+  min-height: var(--alto-tactil);
+  padding: var(--esp-2) var(--esp-3);
+}
+
+.progress-week__hito--alcanzado {
+  background: var(--amarillo);
+  color: var(--negro);
+}
+
+.progress-week__objetivo {
+  font-size: var(--texto-12);
+  font-weight: 700;
+}
+
+.progress-week__hito-estado {
+  align-items: center;
+  display: inline-flex;
+  font-size: var(--texto-14);
+  font-weight: 800;
+  gap: var(--esp-1);
+}
+
+/* E2 · Metas inactivas (spec frontend §3.5 d) */
+.metas-inactivas__lista {
+  display: grid;
+  gap: var(--esp-3);
+  list-style: none;
+  padding: 0;
+}
+
+/* E2 · Formulario de meta con hitos (spec frontend §3.5 b) */
+.meta-form__hitos {
+  border: var(--borde-grueso);
+  border-radius: var(--radio-l);
+  display: grid;
+  gap: var(--esp-3);
+  margin: 0;
+  padding: var(--esp-4);
+}
+
+.meta-form__leyenda {
+  float: none;
+  font-family: var(--fuente-titulo);
+  font-size: var(--texto-20);
+  font-style: italic;
+  font-weight: 800;
+  margin-bottom: var(--esp-2);
+  padding-inline: var(--esp-2);
+  width: auto;
+}
+
+.meta-form__hito {
+  align-items: end;
+  background: var(--gris-card);
+  border: var(--borde-grueso);
+  border-radius: var(--radio-m);
+  display: grid;
+  gap: var(--esp-3);
+  grid-template-columns: minmax(0, 1fr);
+  padding: var(--esp-3);
+}
+
+@media (min-width: 48rem) {
+  .meta-form__hito {
+    grid-template-columns: minmax(0, 2fr) minmax(0, 1fr) auto;
+  }
+}
+
 @media (min-width: 48rem) {
   .app-navbar__inner {
     flex-wrap: nowrap;

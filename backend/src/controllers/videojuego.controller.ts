@@ -20,6 +20,8 @@ import {
   obtenerVideojuego
 } from "../services/videojuego.service";
 import { listarPartidasPorVideojuego } from "../services/partida.service";
+import { listarMetasPorVideojuego } from "../services/meta.service";
+import { obtenerProgresoSemanal } from "../services/progreso.service";
 
 type IdParams = { id: string };
 type LogroParams = { id: string; logroId: string };
@@ -214,6 +216,28 @@ export const listarPartidas: RequestHandler<IdParams> = async (
     response.status(200).json({
       total: partidas.length,
       partidas,
+      requestId: response.locals.requestId
+    });
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+export const progresoSemanal: RequestHandler<IdParams> = async (request, response, next) => {
+  try {
+    const progreso = await obtenerProgresoSemanal(request.params.id);
+    response.status(200).json({ ...progreso, requestId: response.locals.requestId });
+  } catch (error: unknown) {
+    next(error);
+  }
+};
+
+export const listarMetas: RequestHandler<IdParams> = async (request, response, next) => {
+  try {
+    const metas = await listarMetasPorVideojuego(request.params.id);
+    response.status(200).json({
+      total: metas.length,
+      metas,
       requestId: response.locals.requestId
     });
   } catch (error: unknown) {

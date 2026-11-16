@@ -8,7 +8,9 @@ import Videojuego, {
   VideojuegoInput,
   VideojuegoUpdateInput
 } from "../modelos/Videojuego.model";
+import Meta from "../modelos/Meta.model";
 import Partida from "../modelos/Partida.model";
+import { ESTADOS_SIN_META_ACTIVA } from "./meta.service";
 
 export type LogroUpdateInput = Partial<LogroInput>;
 
@@ -87,6 +89,11 @@ export async function actualizarVideojuego(
     throw new ApiError("Videojuego no encontrado", 404);
   }
 
+  // R-20: un juego completado o abandonado no conserva su meta activa; queda en el historial.
+  if (videojuego.estado && ESTADOS_SIN_META_ACTIVA.includes(videojuego.estado)) {
+    await Meta.updateMany({ videojuego: videojuego._id, activa: true }, { $set: { activa: false } });
+  }
+
   return videojuego;
 }
 
@@ -98,7 +105,10 @@ export async function eliminarVideojuego(id: string): Promise<void> {
     throw new ApiError("Videojuego no encontrado", 404);
   }
 
+  // Cascada (R-21): partidas, luego todas sus metas (activas e inactivas) y luego el videojuego.
+  // Sin transacción: el riesgo de un fallo a mitad queda diferido (D-06b).
   await Partida.deleteMany({ videojuego: videojuego._id });
+  await Meta.deleteMany({ videojuego: videojuego._id });
   await videojuego.deleteOne();
 }
 
@@ -131,9 +141,8 @@ export async function obtenerResumen(id: string): Promise<VideojuegoResumen> {
         totalPartidas: { $sum: 1 },
         minutosTotales: { $sum: "$duracionMinutos" },
         ultimaPartida: { $first: "$fecha" },
-        porcentajeAvanceActual: {
-          $first: { $ifNull: ["$porcentajeAvance", 0] }
-        }
+        // Avances en orden de fecha descendente; las partidas sin avance quedan como null.
+        avances: { $push: { $ifNull: ["$porcentajeAvance", null] } }
       }
     },
     {
@@ -144,7 +153,13 @@ export async function obtenerResumen(id: string): Promise<VideojuegoResumen> {
           $round: [{ $divide: ["$minutosTotales", 60] }, 1]
         },
         ultimaPartida: 1,
-        porcentajeAvanceActual: 1
+        // Avance de la partida más reciente que tenga avance; 0 si ninguna lo tiene (R-18, D-03).
+        porcentajeAvanceActual: {
+          $ifNull: [
+            { $first: { $filter: { input: "$avances", cond: { $ne: ["$$this", null] } } } },
+            0
+          ]
+        }
       }
     }
   ]);

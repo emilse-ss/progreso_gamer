@@ -3,6 +3,7 @@ import type {
   LogroUpdateInput,
   PartidaListado,
   PartidasListResponse,
+  ProgresoSemanalResponse,
   Videojuego,
   VideojuegoFilters,
   VideojuegoInput,
@@ -67,6 +68,15 @@ export function obtenerResumenVideojuego(
 ): Promise<VideojuegoResumenResponse> {
   return requestJson<VideojuegoResumenResponse>(
     `/api/videojuegos/${encodeURIComponent(id)}/resumen`,
+  );
+}
+
+/** Progreso de la semana actual, calculado por la API (el frontend no lo recalcula). */
+export function obtenerProgresoSemanal(
+  id: string,
+): Promise<ProgresoSemanalResponse> {
+  return requestJson<ProgresoSemanalResponse>(
+    `/api/videojuegos/${encodeURIComponent(id)}/progreso-semanal`,
   );
 }
 

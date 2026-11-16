@@ -4,7 +4,8 @@ export interface PartidaInput {
   videojuego: string;
   fecha: Date;
   duracionMinutos: number;
-  porcentajeAvance?: number;
+  /** Obligatorio en las partidas nuevas (R-18); el documento lo deja opcional por los datos antiguos. */
+  porcentajeAvance: number;
   notas?: string;
 }
 
@@ -32,10 +33,16 @@ const partidaSchema = new Schema<PartidaDocument>(
     duracionMinutos: {
       type: Number,
       required: [true, "La duración de la partida es obligatoria"],
-      min: [Number.MIN_VALUE, "La duración debe ser mayor que cero"]
+      // Segunda defensa del rango de R-22. Solo se valida al guardar: las partidas antiguas
+      // fuera de rango se conservan (CA-11.5).
+      min: [5, "La duración debe estar entre 5 y 1440 minutos"],
+      max: [1440, "La duración debe estar entre 5 y 1440 minutos"]
     },
     porcentajeAvance: {
       type: Number,
+      // Obligatorio en las partidas nuevas (R-18, D-03). Mongoose valida al guardar, así que
+      // las partidas antiguas sin avance se siguen leyendo.
+      required: [true, "El porcentaje de avance es obligatorio"],
       min: [0, "El porcentaje de avance no puede ser menor que cero"],
       max: [100, "El porcentaje de avance no puede ser mayor que 100"]
     },

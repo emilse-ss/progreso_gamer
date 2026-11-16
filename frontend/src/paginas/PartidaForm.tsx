@@ -48,8 +48,9 @@ export function PartidaForm({
     }
 
     const duration = Number(duracionMinutos);
-    if (!duracionMinutos || !Number.isFinite(duration) || duration <= 0) {
-      setErrorValidacion('La duración debe ser un número mayor que cero.');
+    // Espejo de la regla del backend (R-22): de 5 a 1440 minutos.
+    if (!duracionMinutos || !Number.isFinite(duration) || duration < 5 || duration > 1440) {
+      setErrorValidacion('La duración debe estar entre 5 y 1440 minutos.');
       return;
     }
 
@@ -73,7 +74,8 @@ export function PartidaForm({
     }
 
     await onSubmit({
-      fecha: new Date(fecha).toISOString(),
+      // La hora escrita es hora de Ecuador, sea cual sea la zona del navegador (D-T09, D-02).
+      fecha: `${fecha.length === 16 ? `${fecha}:00` : fecha}-05:00`,
       duracionMinutos: duration,
       porcentajeAvance: progress,
       ...(notas.trim() ? { notas: notas.trim() } : {}),
@@ -117,7 +119,8 @@ export function PartidaForm({
           <input
             className="form-control"
             id="partida-duracion"
-            min="0"
+            max="1440"
+            min="5"
             onChange={(event) => setDuracionMinutos(event.target.value)}
             required
             step="any"
@@ -152,7 +155,7 @@ export function PartidaForm({
             porcentajeAvance.trim() !== '' &&
             Number.isFinite(Number(porcentajeAvance)) &&
             Number(porcentajeAvance) < avanceActual && (
-              <div className="mt-2">
+              <div>
                 <AlertMessage variant="info">
                   El avance indicado es menor al avance actual. Puedes guardar
                   si este valor corresponde al avance total al terminar la

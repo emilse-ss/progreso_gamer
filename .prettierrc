@@ -1,0 +1,19 @@
+{
+  "singleQuote": true,
+  "semi": true,
+  "trailingComma": "all",
+  "printWidth": 80,
+  "tabWidth": 2,
+  "endOfLine": "auto",
+  "proseWrap": "preserve",
+  "overrides": [
+    {
+      "files": "backend/**",
+      "options": {
+        "singleQuote": false,
+        "trailingComma": "none",
+        "printWidth": 100
+      }
+    }
+  ]
+}
