@@ -104,8 +104,8 @@ Estas tareas surgieron durante el diagnóstico, pero no forman parte de su tabla
 
 | Fase | Estado |
 |---|---|
-| 0. Preparación | ☐ |
-| 1. Diagnóstico | ☐ En curso (falta completar decisiones) |
+| 0. Preparación | ☑ (rama `feature/e2-metas-rachas`, `docs/contexto/`; `829bde2`) |
+| 1. Diagnóstico | ☑ (D-01 a D-14 con decisión y motivo; se pagan D-03 y D-10 con D-02) |
 | 2. Harness | ☑ (`.env.example` sin cambios: diferido) |
 | 3. PRD y épicas | ☑ |
 | 4. Backlog | ☑ |
@@ -113,7 +113,7 @@ Estas tareas surgieron durante el diagnóstico, pero no forman parte de su tabla
 | 6. Backend | ☑ |
 | 7. Frontend | ☑ (#11 y #19 de diseño cerrados como sugerencias no incorporadas) |
 | 8. Deuda técnica | ☑ (D-03 en T-19; D-10 y D-02 en T-20) |
-| 9. Auditoría, despliegue y PR | ☐ |
+| 9. Auditoría, despliegue y PR | ◐ En curso: `AUDITORIA.md` (126 filas) y README actualizados; faltan el despliegue en Render, confirmar las URLs y el índice en producción, y el PR |
 | 10. Demo | ☐ |
 
 _Se actualiza al cerrar cada fase, dentro del mismo commit._
